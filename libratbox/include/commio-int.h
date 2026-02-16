@@ -66,10 +66,16 @@ struct acceptdata
 };
 
 /* Only have open flags for now, could be more later */
-#define FLAG_OPEN	0x1
+#define FLAG_OPEN		0x1
+#define FLAG_TLS_HS_DONE	0x2
+
 #define IsFDOpen(F)	(F->flags & FLAG_OPEN)
 #define SetFDOpen(F)	(F->flags |= FLAG_OPEN)
 #define ClearFDOpen(F)	(F->flags &= ~FLAG_OPEN)
+
+#define IsFDTLSHsDone(F)	(F->flags & FLAG_TLS_HS_DONE)
+#define SetFDTLSHsDone(F)	(F->flags |= FLAG_TLS_HS_DONE)
+#define ClearFDTLSHsDone(F)	(F->flags &= ~FLAG_TLS_HS_DONE)
 
 
 struct _fde

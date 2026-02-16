@@ -127,16 +127,29 @@ rb_ssl_timeout(rb_fde_t *F, void *notused)
 	F->accept->callback(F, RB_ERR_TIMEOUT, NULL, 0, F->accept->data);
 }
 
-
 static void
 rb_ssl_info_callback(SSL * ssl, int where, int ret)
 {
-	/* this shouldn't happen anymore with renegotiation disabled */
-	if(where & SSL_CB_HANDSHAKE_START)
+	rb_fde_t *F;
+
+	if(ssl == NULL)
+		return;	
+
+	if((F = SSL_get_ex_data(ssl, libratbox_index)) == NULL)
+		return;
+
+	if(!IsFDTLSHsDone(F) && (where & SSL_CB_HANDSHAKE_DONE) && (ret == 1))
 	{
-		rb_fde_t *F = SSL_get_ex_data(ssl, libratbox_index);
-		if(F == NULL)
-			return;
+		SetFDTLSHsDone(F);
+		return;
+	}
+
+	if(IsFDTLSHsDone(F) && (where & SSL_CB_HANDSHAKE_START))
+	{
+#ifdef TLS1_3_VERSION
+	        if(SSL_version(ssl) >= TLS1_3_VERSION)
+        	        return;
+#endif
 		F->handshake_count++;
 		F->last_handshake = rb_current_time();
 	}
@@ -366,6 +379,16 @@ rb_ssl_ctx_free(rb_ssl_ctx *sctx)
 	}
 }
 
+static const SSL_METHOD *
+rb_tls_client_method(void)
+{
+#if defined(LIBRESSL_VERSION_NUMBER) || OPENSSL_VERSION_NUMBER < 0x10100000L
+    return SSLv23_client_method();
+#else
+    return TLS_client_method();
+#endif
+}
+
 rb_ssl_ctx *
 rb_setup_ssl_client(const char *ssl_cipher_list, const char *cert, const char *keyfile)
 {
@@ -374,7 +397,7 @@ rb_setup_ssl_client(const char *ssl_cipher_list, const char *cert, const char *k
 	
 	sctx = rb_malloc(sizeof(rb_ssl_ctx));	
 	sctx->refcount = 1;
-        sctx->ssl_ctx = SSL_CTX_new(TLS_client_method());
+        sctx->ssl_ctx = SSL_CTX_new(rb_tls_client_method());
         
         SSL_CTX_set_options(sctx->ssl_ctx, SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3 | SSL_OP_NO_COMPRESSION);
         if(sctx->ssl_ctx == NULL)
@@ -416,6 +439,16 @@ cleanup:
         return NULL;        
 }
 
+static const SSL_METHOD *
+rb_tls_server_method(void)
+{
+#if defined(LIBRESSL_VERSION_NUMBER) || OPENSSL_VERSION_NUMBER < 0x10100000L
+    return SSLv23_server_method();
+#else
+    return TLS_server_method();
+#endif
+}
+
 rb_ssl_ctx *
 rb_setup_ssl_server(const char *cacert, const char *cert, const char *keyfile, const char *dhfile,
 		    const char *ssl_cipher_list, const char *named_curve, rb_tls_ver_t tls_min_ver)
@@ -427,7 +460,9 @@ rb_setup_ssl_server(const char *cacert, const char *cert, const char *keyfile, c
 	long tls_opts;
 	sctx = rb_malloc(sizeof(rb_ssl_ctx));
 	sctx->refcount = 1;
-	sctx->ssl_ctx = SSL_CTX_new(TLS_server_method());
+
+	sctx->ssl_ctx = SSL_CTX_new(rb_tls_server_method());
+
 	if(sctx->ssl_ctx == NULL)
 	{
 		rb_lib_log("rb_init_openssl: Unable to initialize OpenSSL server context: %s",
@@ -439,7 +474,10 @@ rb_setup_ssl_server(const char *cacert, const char *cert, const char *keyfile, c
 	tls_opts = SSL_CTX_get_options(sctx->ssl_ctx);
 
 	/* Disable SSLv2, make the client use our settings */
-	tls_opts |= SSL_OP_NO_SSLv2 | SSL_OP_NO_COMPRESSION | SSL_OP_CIPHER_SERVER_PREFERENCE | SSL_OP_NO_RENEGOTIATION;
+	tls_opts |= SSL_OP_NO_SSLv2 | SSL_OP_NO_COMPRESSION | SSL_OP_CIPHER_SERVER_PREFERENCE;
+#ifdef  SSL_OP_NO_RENEGOTIATION
+	tls_opts |= SSL_OP_NO_RENEGOTIATION;
+#endif
 	switch(tls_min_ver)
 	{
 		case RB_TLS_VER_SSL3: /* we default to SSLv3..sadly */
