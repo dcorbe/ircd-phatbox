@@ -385,14 +385,14 @@ set_flags_to_string(struct Client *client_p)
 
 	if(client_p->umodes & UMODE_OPERWALL)
 	{
-		sprintf(setflags, "%s %s", setflags, "OWALLOPS");
+		rb_snprintf_append(setflags, sizeof(setflags), " %s", "OWALLOPS");
 	}
 
 	for(i = 0; flag_table[i].name; i++)
 	{
 		if(client_p->umodes & flag_table[i].mode)
 		{
-			sprintf(setflags, "%s %s", setflags, flag_table[i].name);
+			rb_snprintf_append(setflags, sizeof(setflags), " %s", flag_table[i].name);
 		}
 	}
 
@@ -405,7 +405,7 @@ set_flags_to_string(struct Client *client_p)
 		 */
 		if(client_p->umodes & UMODE_NCHANGE)
 		{
-			sprintf(setflags, "%s %s", setflags, "NICKCHANGES");
+			rb_snprintf_append(setflags, sizeof(setflags), " %s", "NICKCHANGES");
 		}
 #if 0
 	}
@@ -434,7 +434,7 @@ unset_flags_to_string(struct Client *client_p)
 	{
 		if(!(client_p->umodes & UMODE_OPERWALL))
 		{
-			sprintf(setflags, "%s %s", setflags, "OWALLOPS");
+			rb_snprintf_append(setflags, sizeof(setflags), " %s", "OWALLOPS");
 		}
 	}
 
@@ -444,7 +444,7 @@ unset_flags_to_string(struct Client *client_p)
 		{
 			if(!isoper && flag_table[i].oper)
 				continue;
-			sprintf(setflags, "%s %s", setflags, flag_table[i].name);
+			rb_snprintf_append(setflags, sizeof(setflags), " %s", flag_table[i].name);
 		}
 	}
 
@@ -452,9 +452,10 @@ unset_flags_to_string(struct Client *client_p)
 	{
 		if(!(client_p->umodes & UMODE_NCHANGE))
 		{
-			sprintf(setflags, "%s %s", setflags, "NICKCHANGES");
+			rb_snprintf_append(setflags, sizeof(setflags), " %s", "NICKCHANGES");
 		}
 	}
 
 	return setflags;
 }
+

@@ -313,7 +313,7 @@ resolve_host(char **parv)
 
 	switch (*iptype)
 	{
-	case 6:
+	case '6':
 		flags = T_AAAA;
 		break;
 	default:
