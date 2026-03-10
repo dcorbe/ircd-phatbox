@@ -62,12 +62,10 @@ rb_ctime(const time_t t, char *buf, size_t len)
 	struct tm *tp;
 	static char timex[128];
 	size_t tlen;
-#if defined(HAVE_GMTIME_R)
+
 	struct tm tmr;
 	tp = gmtime_r(&t, &tmr);
-#else
-	tp = gmtime(&t);
-#endif
+
 	if(rb_unlikely(tp == NULL))
 	{
 		strcpy(buf, "");
@@ -97,12 +95,8 @@ char *
 rb_date(const time_t t, char *buf, size_t len)
 {
 	struct tm *gm;
-#if defined(HAVE_GMTIME_R)
 	struct tm gmbuf;
 	gm = gmtime_r(&t, &gmbuf);
-#else
-	gm = gmtime(&t);
-#endif
 
 	if(rb_unlikely(gm == NULL))
 	{

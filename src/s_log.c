@@ -220,13 +220,18 @@ report_operspy(struct Client *source_p, const char *token, const char *arg)
 const char *
 smalldate(time_t ltime, char *buf, size_t bufsz)
 {
-	struct tm *lt;
+	struct tm *lt, t;
 
 	if(buf == NULL)
 		return NULL;
 
-	lt = gmtime(&ltime);
+	lt = gmtime_r(&ltime, &t);
 
+	if(lt == NULL)
+	{
+		rb_strlcpy(buf, "", bufsz);
+		return buf;
+	}
 	snprintf(buf, bufsz, "%d/%d/%d %02d.%02d",
 		 lt->tm_year + 1900, lt->tm_mon + 1, lt->tm_mday, lt->tm_hour, lt->tm_min);
 

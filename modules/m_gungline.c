@@ -412,13 +412,13 @@ h_gungline_stats(hook_data_int * data)
 		rb_dlink_node *pending_node;
 		struct gline_pending *glp_ptr;
 		char timebuffer[MAX_DATE_STRING];
-		struct tm *tmptr;
+		struct tm *tmptr, t;
 
 		RB_DLINK_FOREACH(pending_node, pending_gunglines.head)
 		{
 			glp_ptr = pending_node->data;
 
-			tmptr = gmtime(&glp_ptr->time_request1);
+			tmptr = gmtime_r(&glp_ptr->time_request1, &t);
 			strftime(timebuffer, MAX_DATE_STRING, "%Y/%m/%d %H:%M:%S", tmptr);
 
 			sendto_one_notice(data->client,
@@ -430,7 +430,7 @@ h_gungline_stats(hook_data_int * data)
 
 			if(glp_ptr->oper_nick2[0])
 			{
-				tmptr = gmtime(&glp_ptr->time_request2);
+				tmptr = gmtime_r(&glp_ptr->time_request2, &t);
 				strftime(timebuffer, MAX_DATE_STRING, "%Y/%m/%d %H:%M:%S", tmptr);
 				sendto_one_notice(data->client,
 						  ":2) %s!%s@%s on %s requested ungline at %s for %s@%s [%s]",
