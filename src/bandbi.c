@@ -88,7 +88,7 @@ bandb_start(void)
 {
 	char fullpath[PATH_MAX + 1];
 
-	rb_setenv("BANDB_DPATH", ServerInfo.bandb_path, 1);
+	setenv("BANDB_DPATH", ServerInfo.bandb_path, 1);
 	if(bandb_path == NULL)
 	{
 		snprintf(fullpath, sizeof(fullpath), "%s/bandb", LIBEXEC_DIR);

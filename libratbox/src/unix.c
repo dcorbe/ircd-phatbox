@@ -114,34 +114,3 @@ rb_sleep(unsigned int seconds, unsigned int useconds)
 	select(0, NULL, NULL, NULL, &tv);
 #endif
 }
-
-/* this is to keep some linkers from bitching about exporting a non-existant symbol..bleh */
-char *
-rb_strerror(int error)
-{
-	return strerror(error);
-}
-
-int
-rb_kill(pid_t pid, int sig)
-{
-	return kill(pid, sig);
-}
-
-int
-rb_setenv(const char *name, const char *value, int overwrite)
-{
-	return setenv(name, value, overwrite);
-}
-
-pid_t
-rb_waitpid(pid_t pid, int *status, int options)
-{
-	return waitpid(pid, status, options);
-}
-
-pid_t
-rb_getpid(void)
-{
-	return getpid();
-}

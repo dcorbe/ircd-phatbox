@@ -37,7 +37,6 @@ rb_get_fd
 rb_get_fde
 rb_get_iotype
 rb_getmaxconnect
-rb_getpid
 rb_get_pseudo_random
 rb_get_random
 rb_get_sockerr
@@ -62,7 +61,6 @@ rb_io_init_event
 rb_io_sched_event
 rb_io_supports_event
 rb_io_unsched_event
-rb_kill
 rb_lib_die
 rb_lib_init
 rb_lib_log
@@ -112,7 +110,6 @@ rb_select
 rb_send_fd_buf
 rb_set_back_events
 rb_set_buffers
-rb_setenv
 rb_set_nb
 rb_setselect
 rb_set_time
@@ -132,14 +129,12 @@ rb_ssl_handshake_count
 rb_ssl_last_handshake
 rb_ssl_start_accepted
 rb_ssl_start_connected
-rb_strerror
 rb_string_to_array
 rb_strnlen
 rb_strtok_r
 rb_supports_ssl
 rb_vsnprintf_append
 rb_vsprintf_append
-rb_waitpid
 rb_write
 rb_writev
 rb_ssl_get_cipher
