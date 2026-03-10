@@ -170,8 +170,6 @@ pid_t rb_spawn_process(const char *, const char **);
 
 char *rb_strtok_r(char *, const char *, char **);
 
-int rb_gettimeofday(struct timeval *, void *);
-
 void rb_sleep(unsigned int seconds, unsigned int useconds);
 char *rb_crypt(const char *, const char *);
 

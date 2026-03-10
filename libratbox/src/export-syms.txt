@@ -41,7 +41,6 @@ rb_get_pseudo_random
 rb_get_random
 rb_get_sockerr
 rb_ssl_get_strerror
-rb_gettimeofday
 rb_get_type
 rb_helper_child
 rb_helper_close

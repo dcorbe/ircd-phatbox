@@ -77,28 +77,6 @@ rb_spawn_process(const char *path, const char **argv)
 }
 #endif
 
-#ifndef HAVE_GETTIMEOFDAY
-int
-rb_gettimeofday(struct timeval *tv, void *tz)
-{
-	if(tv == NULL)
-	{
-		errno = EFAULT;
-		return -1;
-	}
-	tv->tv_usec = 0;
-	if(time(&tv->tv_sec) == -1)
-		return -1;
-	return 0;
-}
-#else
-int
-rb_gettimeofday(struct timeval *tv, void *tz)
-{
-	return (gettimeofday(tv, tz));
-}
-#endif
-
 void
 rb_sleep(unsigned int seconds, unsigned int useconds)
 {
