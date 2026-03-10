@@ -68,7 +68,7 @@ rb_ctime(const time_t t, char *buf, size_t len)
 
 	if(rb_unlikely(tp == NULL))
 	{
-		strcpy(buf, "");
+		rb_strlcpy(buf, "", len);
 		return (buf);
 	}
 
