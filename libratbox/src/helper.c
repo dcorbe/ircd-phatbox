@@ -139,9 +139,9 @@ rb_helper_start(const char *name, const char *fullpath, rb_helper_cb * read_cb,
 	rb_set_nb(out_f[0]);
 	rb_set_nb(out_f[1]);
 
-	rb_setenv("IFD", fy, 1);
-	rb_setenv("OFD", fx, 1);
-	rb_setenv("MAXFD", "256", 1);
+	setenv("IFD", fy, 1);
+	setenv("OFD", fx, 1);
+	setenv("MAXFD", "256", 1);
 
 	snprintf(buf, sizeof(buf), "-%s", name);
 	parv[0] = buf;
@@ -268,7 +268,7 @@ rb_helper_close(rb_helper *helper)
 {
 	if(helper == NULL)
 		return;
-	rb_kill(helper->pid, SIGKILL);
+	kill(helper->pid, SIGKILL);
 	rb_close(helper->ifd);
 	rb_close(helper->ofd);
 	rb_free(helper);

@@ -98,10 +98,10 @@ arc4_stir(struct arc4_stream *as)
 	pid = getpid();
 	arc4_addrandom(as, (void *)&pid, sizeof(pid));
 
-	rb_gettimeofday(&tv, NULL);
+	gettimeofday(&tv, NULL);
 	arc4_addrandom(as, (void *)&tv.tv_sec, sizeof(&tv.tv_sec));
 	arc4_addrandom(as, (void *)&tv.tv_usec, sizeof(&tv.tv_usec));
-	rb_gettimeofday(&tv, NULL);
+	gettimeofday(&tv, NULL);
 	arc4_addrandom(as, (void *)&tv.tv_usec, sizeof(&tv.tv_usec));
 
 #if defined(HAVE_GETRUSAGE) && defined(RUSAGE_SELF)

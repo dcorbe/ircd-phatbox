@@ -1082,7 +1082,7 @@ conf_set_serverinfo_bandb_path(confentry_t * entry, conf_t * conf, struct conf_i
 
 		if(access(dirname, W_OK) == -1)
 		{
-			conf_report_error_nl("Unable to access bandb %s: %s ignoring...", path, rb_strerror(errno));
+			conf_report_error_nl("Unable to access bandb %s: %s ignoring...", path, strerror(errno));
 			return;
 		}
 	}
@@ -1090,7 +1090,7 @@ conf_set_serverinfo_bandb_path(confentry_t * entry, conf_t * conf, struct conf_i
 	{
 		if(access(path, W_OK) == -1)
 		{
-			conf_report_error_nl("Unable to access bandb %s: %s ignoring...", path, rb_strerror(errno));
+			conf_report_error_nl("Unable to access bandb %s: %s ignoring...", path, strerror(errno));
 			return;
 		}
 	}

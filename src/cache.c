@@ -345,14 +345,14 @@ void
 cache_user_motd(void)
 {
 	struct stat sb;
-	struct tm *local_tm;
 
 	if(ConfigFileEntry.motd_path == NULL)
 		return;
 
 	if(stat(ConfigFileEntry.motd_path, &sb) == 0)
 	{
-		local_tm = gmtime(&sb.st_mtime);
+		struct tm *local_tm, t;
+		local_tm = gmtime_r(&sb.st_mtime, &t);
 
 		if(local_tm != NULL)
 		{

@@ -416,7 +416,7 @@ check_pidfile(const char *filename)
 		if(fgets(buff, sizeof(buff), fb) != NULL)
 		{
 			pidfromfile = atoi(buff);
-			if(!rb_kill(pidfromfile, 0))
+			if(!kill(pidfromfile, 0))
 			{
 				printf("ircd-ratbox: daemon is already running\n");
 				exit(-1);

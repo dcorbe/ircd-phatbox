@@ -170,20 +170,11 @@ pid_t rb_spawn_process(const char *, const char **);
 
 char *rb_strtok_r(char *, const char *, char **);
 
-int rb_gettimeofday(struct timeval *, void *);
-
 void rb_sleep(unsigned int seconds, unsigned int useconds);
 char *rb_crypt(const char *, const char *);
 
 unsigned char *rb_base64_encode(const unsigned char *str, ssize_t length);
 unsigned char *rb_base64_decode(const unsigned char *str, ssize_t length, ssize_t *ret);
-int rb_kill(pid_t, int);
-char *rb_strerror(int);
-
-int rb_setenv(const char *, const char *, int);
-
-pid_t rb_waitpid(pid_t pid, int *status, int options);
-pid_t rb_getpid(void);
 
 extern const char *libratbox_generation;
 extern const char *libratbox_platform;

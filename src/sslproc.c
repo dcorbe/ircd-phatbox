@@ -154,7 +154,7 @@ ssl_killall(void)
 			continue;
 		ctl->dead = true;
 		ssld_count--;
-		rb_kill(ctl->pid, SIGKILL);
+		kill(ctl->pid, SIGKILL);
 	}
 }
 
@@ -166,7 +166,7 @@ ssl_dead(ssl_ctl_t * ctl)
 
 	ctl->dead = true;
 	ssld_count--;
-	rb_kill(ctl->pid, SIGKILL);	/* make sure the process is really gone */
+	kill(ctl->pid, SIGKILL);	/* make sure the process is really gone */
 	ilog(L_MAIN, "ssld helper died - attempting to restart");
 	sendto_realops_flags(UMODE_ALL, L_ALL, "ssld helper died - attempting to restart");
 	start_ssldaemon(1, ServerInfo.ssl_ca_cert, ServerInfo.ssl_cert, ServerInfo.ssl_private_key,
@@ -265,7 +265,7 @@ start_ssldaemon(int count, const char *ssl_ca_cert, const char *ssl_cert, const 
 		rb_set_buffers(F2, READBUF_SIZE*32);
 		rb_set_cloexec(F2, false);
 		snprintf(fdarg, sizeof(fdarg), "%d", rb_get_fd(F2));
-		rb_setenv("CTL_FD", fdarg, 1);
+		setenv("CTL_FD", fdarg, 1);
 		if(rb_pipe(&P1, &P2, "SSL/TLS pipe") == -1)
 		{
 			ilog(L_MAIN, "Unable to create ssld - rb_pipe failed: %s", strerror(errno));
@@ -273,9 +273,9 @@ start_ssldaemon(int count, const char *ssl_ca_cert, const char *ssl_cert, const 
 		}
 		rb_set_cloexec(P1, false);
 		snprintf(fdarg, sizeof(fdarg), "%d", rb_get_fd(P1));
-		rb_setenv("CTL_PIPE", fdarg, 1);
+		setenv("CTL_PIPE", fdarg, 1);
 		snprintf(s_pid, sizeof(s_pid), "%d", (int)getpid());
-		rb_setenv("CTL_PPID", s_pid, 1);
+		setenv("CTL_PPID", s_pid, 1);
 
 		pid = rb_spawn_process(ssld_path, (const char **)parv);
 		if(pid == -1)
