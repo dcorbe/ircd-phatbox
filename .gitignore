@@ -1,0 +1,43 @@
+# Build artifacts
+*.o
+*.lo
+*.la
+*.a
+*.so
+*.dylib
+.libs/
+.deps/
+.dirstamp
+
+# Autotools generated
+autom4te.cache/
+config.status
+config.log
+config.h
+stamp-h1
+libtool
+Makefile
+
+# Build outputs
+ircd-phatbox
+bandb/bandb
+bandb/bantool
+ssld/ssld
+resolver/resolver
+tools/ratbox-mkpasswd
+main.o
+
+# Generated source
+src/version.c
+src/version.c.last
+libratbox/src/version.c
+libratbox/src/version.c.last
+include/setup.h
+include/librb-config.h
+libratbox/include/libratbox_config.h
+
+# IDE / OS
+.DS_Store
+*.swp
+*~
+.claude/
