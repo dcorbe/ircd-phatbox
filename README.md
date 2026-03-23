@@ -45,12 +45,9 @@ make install
 - zlib (optional, for compressed server links)
 - flex/lex
 
-### Supported platforms
+### Tested platforms
 
-- Linux (glibc)
-- macOS (Apple Silicon and Intel)
-- FreeBSD
-- Other POSIX systems likely work but are untested
+- macOS (Apple Silicon)
 
 ## Configuration
 
