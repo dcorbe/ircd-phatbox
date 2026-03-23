@@ -92,7 +92,7 @@ static void stats_p_spy(struct Client *);
 struct StatsStruct
 {
 	char letter;
-	void (*handler) ();
+	void (*handler) (struct Client *, int, const char **);
 	int need_oper;
 	int need_admin;
 };
@@ -181,7 +181,7 @@ static struct StatsStruct stats_cmd_table[] = {
 	{'z', stats_memory, 1, 0,},
 	{'Z', stats_ziplinks, 1, 0,},
 	{'?', stats_servlinks, 0, 0,},
-	{(char) 0, (void (*)()) 0, 0, 0,}
+	{0, NULL, 0, 0,}
 };
 
 /*
@@ -239,11 +239,7 @@ m_stats(struct Client *client_p, struct Client *source_p, int parc, const char *
 				break;
 			}
 			SetCork(source_p);
-			/* Blah, stats L needs the parameters, none of the others do.. */
-			if(statchar == 'L' || statchar == 'l')
-				stats_cmd_table[i].handler(source_p, parc, parv);
-			else
-				stats_cmd_table[i].handler(source_p);
+			stats_cmd_table[i].handler(source_p, parc, parv);
 			ClearCork(source_p);
 
 		}
