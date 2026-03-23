@@ -1,7 +1,17 @@
- 
-ircd-phatbox is an evolution where ircd-hybrid left off around version 7-rc1.  
-Currently the ircd-phatbox team consists of the following developers:
- 
+ircd-phatbox is a modern fork of ircd-ratbox, itself an evolution of
+ircd-hybrid. It builds on the security-hardened mannfred fork.
+
+ircd-phatbox development team:
+
+Daniel Corbe <daniel -at- corbe.net>
+
+ircd-ratbox-mannfred contributors:
+
+Thomas Mannfred Carlsson
+Aaron Sethman (synandro)
+
+Original ircd-ratbox development team:
+
 AndroSyn, Aaron Sethman <androsyn -at- ratbox.org>
 anfl, Lee Hardy <lee -at- leeh.co.uk>
 jilles, Jilles Tjoelker <jilles -at- stack.nl>
@@ -11,9 +21,7 @@ Special thanks for support, code and ideas to:
 dubkat, Daniel Reidy <dubkat -at- gmail.com>
 Hwy, W. Campbell <wcampbel -at- botbay.net>
 larne, Edward Brocklesby <ejb -at- sdf.lonestar.org>
- 
-Of course our work is based on the work of many, many others over the past
-10 or so years since irc has existed, including the work done by the Hybrid
-team, our thanks goes to them.
- 
 
+Our work is based on the work of many others over the past 30+ years
+since IRC has existed, including the work done by the Hybrid team.
+Our thanks goes to them.
