@@ -3,12 +3,7 @@
 /* Define if building universal (internal helper macro) */
 #undef AC_APPLE_UNIVERSAL_BUILD
 
-/* Define to one of `_getb67', `GETB67', `getb67' for Cray-2 and Cray-YMP
-   systems. This function is required for `alloca.c' support on those systems.
-   */
-#undef CRAY_STACKSEG_END
-
-/* Define to 1 if using `alloca.c'. */
+/* Define to 1 if using 'alloca.c'. */
 #undef C_ALLOCA
 
 /* enable openchanfix/fake client support code */
@@ -20,51 +15,50 @@
 /* Prefix where config files are installed. */
 #undef ETC_DIR
 
-/* Define to 1 if you have `alloca', as a function or macro. */
+/* Define to 1 if you have 'alloca', as a function or macro. */
 #undef HAVE_ALLOCA
 
-/* Define to 1 if you have <alloca.h> and it should be used (not on Ultrix).
-   */
+/* Define to 1 if <alloca.h> works. */
 #undef HAVE_ALLOCA_H
 
-/* Define to 1 if you have the `argz_add' function. */
+/* Define to 1 if you have the 'argz_add' function. */
 #undef HAVE_ARGZ_ADD
 
-/* Define to 1 if you have the `argz_append' function. */
+/* Define to 1 if you have the 'argz_append' function. */
 #undef HAVE_ARGZ_APPEND
 
-/* Define to 1 if you have the `argz_count' function. */
+/* Define to 1 if you have the 'argz_count' function. */
 #undef HAVE_ARGZ_COUNT
 
-/* Define to 1 if you have the `argz_create_sep' function. */
+/* Define to 1 if you have the 'argz_create_sep' function. */
 #undef HAVE_ARGZ_CREATE_SEP
 
 /* Define to 1 if you have the <argz.h> header file. */
 #undef HAVE_ARGZ_H
 
-/* Define to 1 if you have the `argz_insert' function. */
+/* Define to 1 if you have the 'argz_insert' function. */
 #undef HAVE_ARGZ_INSERT
 
-/* Define to 1 if you have the `argz_next' function. */
+/* Define to 1 if you have the 'argz_next' function. */
 #undef HAVE_ARGZ_NEXT
 
-/* Define to 1 if you have the `argz_stringify' function. */
+/* Define to 1 if you have the 'argz_stringify' function. */
 #undef HAVE_ARGZ_STRINGIFY
 
 /* Define to 1 if you have the <arpa/inet.h> header file. */
 #undef HAVE_ARPA_INET_H
 
-/* Define to 1 if you have the `asprintf' function. */
+/* Define to 1 if you have the 'asprintf' function. */
 #undef HAVE_ASPRINTF
 
-/* Define to 1 if you have the `closedir' function. */
+/* Define to 1 if you have the 'closedir' function. */
 #undef HAVE_CLOSEDIR
 
-/* Define to 1 if you have the declaration of `cygwin_conv_path', and to 0 if
+/* Define to 1 if you have the declaration of 'cygwin_conv_path', and to 0 if
    you don't. */
 #undef HAVE_DECL_CYGWIN_CONV_PATH
 
-/* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
+/* Define to 1 if you have the <dirent.h> header file, and it defines 'DIR'.
    */
 #undef HAVE_DIRENT_H
 
@@ -74,7 +68,7 @@
 /* Define to 1 if you have the <dld.h> header file. */
 #undef HAVE_DLD_H
 
-/* Define to 1 if you have the `dlerror' function. */
+/* Define to 1 if you have the 'dlerror' function. */
 #undef HAVE_DLERROR
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
@@ -89,7 +83,7 @@
 /* Define to 1 if you have the <errno.h> header file. */
 #undef HAVE_ERRNO_H
 
-/* Define to 1 if the system has the type `error_t'. */
+/* Define to 1 if the system has the type 'error_t'. */
 #undef HAVE_ERROR_T
 
 /* Define to 1 if you have the <inttypes.h> header file. */
@@ -110,7 +104,7 @@
 /* Define if you have tcmalloc */
 #undef HAVE_LIBTCMALLOC_MINIMAL
 
-/* Define to 1 if you have the `lstat' function. */
+/* Define to 1 if you have the 'lstat' function. */
 #undef HAVE_LSTAT
 
 /* Define this if a modern libltdl is already installed */
@@ -119,31 +113,31 @@
 /* Define to 1 if you have the <mach-o/dyld.h> header file. */
 #undef HAVE_MACH_O_DYLD_H
 
-/* Define to 1 if you have the <memory.h> header file. */
-#undef HAVE_MEMORY_H
+/* Define to 1 if you have the <minix/config.h> header file. */
+#undef HAVE_MINIX_CONFIG_H
 
-/* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
+/* Define to 1 if you have the <ndir.h> header file, and it defines 'DIR'. */
 #undef HAVE_NDIR_H
 
 /* Define to 1 if you have the <netinet/in.h> header file. */
 #undef HAVE_NETINET_IN_H
 
-/* Define to 1 if you have the `opendir' function. */
+/* Define to 1 if you have the 'opendir' function. */
 #undef HAVE_OPENDIR
 
 /* Define if libtool can extract symbol lists from object files. */
 #undef HAVE_PRELOADED_SYMBOLS
 
-/* Define to 1 if you have the `readdir' function. */
+/* Define to 1 if you have the 'readdir' function. */
 #undef HAVE_READDIR
 
 /* Define if you have the shl_load function. */
 #undef HAVE_SHL_LOAD
 
-/* Define to 1 if you have the `snprintf' function. */
+/* Define to 1 if you have the 'snprintf' function. */
 #undef HAVE_SNPRINTF
 
-/* Define to 1 if you have the `stat' function. */
+/* Define to 1 if you have the 'stat' function. */
 #undef HAVE_STAT
 
 /* Define to 1 if you have the <stddef.h> header file. */
@@ -151,6 +145,9 @@
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdio.h> header file. */
+#undef HAVE_STDIO_H
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
@@ -161,26 +158,26 @@
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
 
-/* Define to 1 if you have the `strlcat' function. */
+/* Define to 1 if you have the 'strlcat' function. */
 #undef HAVE_STRLCAT
 
-/* Define to 1 if you have the `strlcpy' function. */
+/* Define to 1 if you have the 'strlcpy' function. */
 #undef HAVE_STRLCPY
 
-/* Define to 1 if the system has the type `struct mallinfo'. */
+/* Define to 1 if the system has the type 'struct mallinfo'. */
 #undef HAVE_STRUCT_MALLINFO
 
-/* Define to 1 if the system has the type `struct mallinfo2'. */
+/* Define to 1 if the system has the type 'struct mallinfo2'. */
 #undef HAVE_STRUCT_MALLINFO2
 
-/* Define to 1 if you have the <sys/dir.h> header file, and it defines `DIR'.
+/* Define to 1 if you have the <sys/dir.h> header file, and it defines 'DIR'.
    */
 #undef HAVE_SYS_DIR_H
 
 /* Define to 1 if you have the <sys/dl.h> header file. */
 #undef HAVE_SYS_DL_H
 
-/* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.
+/* Define to 1 if you have the <sys/ndir.h> header file, and it defines 'DIR'.
    */
 #undef HAVE_SYS_NDIR_H
 
@@ -196,6 +193,9 @@
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H
 
+/* Define to 1 if you have the <sys/time.h> header file. */
+#undef HAVE_SYS_TIME_H
+
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
 
@@ -205,8 +205,11 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
-/* Define to 1 if you have the `vasprintf' function. */
+/* Define to 1 if you have the 'vasprintf' function. */
 #undef HAVE_VASPRINTF
+
+/* Define to 1 if you have the <wchar.h> header file. */
+#undef HAVE_WCHAR_H
 
 /* This value is set to 1 to indicate that the system argz facility works */
 #undef HAVE_WORKING_ARGZ
@@ -245,12 +248,14 @@
    module search path. */
 #undef LT_MODULE_PATH_VAR
 
-/* Define to the sub-directory in which libtool stores uninstalled libraries.
-   */
+/* Define to the sub-directory where libtool stores uninstalled libraries. */
 #undef LT_OBJDIR
 
 /* Define to the shared library suffix, say, ".dylib". */
 #undef LT_SHARED_EXT
+
+/* Define to the shared archive member specification, say "(shr.o)". */
+#undef LT_SHARED_LIB_MEMBER
 
 /* Prefix where modules are installed. */
 #undef MODULE_DIR
@@ -291,10 +296,10 @@
 /* Extension that shared libs use */
 #undef SHLIBEXT
 
-/* The size of `long', as computed by sizeof. */
+/* The size of 'long', as computed by sizeof. */
 #undef SIZEOF_LONG
 
-/* The size of `time_t', as computed by sizeof. */
+/* The size of 'time_t', as computed by sizeof. */
 #undef SIZEOF_TIME_T
 
 /* Define this to enable soft asserts. */
@@ -311,34 +316,111 @@
 /* "Use static modules" */
 #undef STATIC_MODULES
 
-/* Define to 1 if you have the ANSI C header files. */
+/* Define to 1 if all of the C89 standard headers exist (not just the ones
+   required in a freestanding environment). This macro is provided for
+   backward compatibility; new code need not use it. */
 #undef STDC_HEADERS
 
-/* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
+/* Define to 1 if you can safely include both <sys/time.h> and <time.h>. This
+   macro is obsolete. */
 #undef TIME_WITH_SYS_TIME
 
 /* Define to enable CHALLENGE support, requires OpenSSL */
 #undef USE_CHALLENGE
 
-/* Enable extensions on AIX 3, Interix.  */
+/* Enable extensions on AIX, Interix, z/OS.  */
 #ifndef _ALL_SOURCE
 # undef _ALL_SOURCE
+#endif
+/* Enable extensions on Cosmopolitan Libc. */
+#ifndef _COSMO_SOURCE
+# undef _COSMO_SOURCE
+#endif
+/* Enable general extensions on macOS.  */
+#ifndef _DARWIN_C_SOURCE
+# undef _DARWIN_C_SOURCE
+#endif
+/* Enable general extensions on Solaris.  */
+#ifndef __EXTENSIONS__
+# undef __EXTENSIONS__
 #endif
 /* Enable GNU extensions on systems that have them.  */
 #ifndef _GNU_SOURCE
 # undef _GNU_SOURCE
 #endif
-/* Enable threading extensions on Solaris.  */
+/* Enable X/Open compliant socket functions that do not require linking
+   with -lxnet on HP-UX 11.11.  */
+#ifndef _HPUX_ALT_XOPEN_SOCKET_API
+# undef _HPUX_ALT_XOPEN_SOCKET_API
+#endif
+/* Identify the host operating system as Minix.
+   This macro does not affect the system headers' behavior.
+   A future release of Autoconf may stop defining this macro.  */
+#ifndef _MINIX
+# undef _MINIX
+#endif
+/* Enable general extensions on NetBSD.
+   Enable NetBSD compatibility extensions on Minix.  */
+#ifndef _NETBSD_SOURCE
+# undef _NETBSD_SOURCE
+#endif
+/* Enable OpenBSD compatibility extensions on NetBSD.
+   Oddly enough, this does nothing on OpenBSD.  */
+#ifndef _OPENBSD_SOURCE
+# undef _OPENBSD_SOURCE
+#endif
+/* Define to 1 if needed for POSIX-compatible behavior.  */
+#ifndef _POSIX_SOURCE
+# undef _POSIX_SOURCE
+#endif
+/* Define to 2 if needed for POSIX-compatible behavior.  */
+#ifndef _POSIX_1_SOURCE
+# undef _POSIX_1_SOURCE
+#endif
+/* Enable POSIX-compatible threading on Solaris.  */
 #ifndef _POSIX_PTHREAD_SEMANTICS
 # undef _POSIX_PTHREAD_SEMANTICS
+#endif
+/* Enable extensions specified by ISO/IEC TS 18661-5:2014.  */
+#ifndef __STDC_WANT_IEC_60559_ATTRIBS_EXT__
+# undef __STDC_WANT_IEC_60559_ATTRIBS_EXT__
+#endif
+/* Enable extensions specified by ISO/IEC TS 18661-1:2014.  */
+#ifndef __STDC_WANT_IEC_60559_BFP_EXT__
+# undef __STDC_WANT_IEC_60559_BFP_EXT__
+#endif
+/* Enable extensions specified by ISO/IEC TS 18661-2:2015.  */
+#ifndef __STDC_WANT_IEC_60559_DFP_EXT__
+# undef __STDC_WANT_IEC_60559_DFP_EXT__
+#endif
+/* Enable extensions specified by C23 Annex F.  */
+#ifndef __STDC_WANT_IEC_60559_EXT__
+# undef __STDC_WANT_IEC_60559_EXT__
+#endif
+/* Enable extensions specified by ISO/IEC TS 18661-4:2015.  */
+#ifndef __STDC_WANT_IEC_60559_FUNCS_EXT__
+# undef __STDC_WANT_IEC_60559_FUNCS_EXT__
+#endif
+/* Enable extensions specified by C23 Annex H and ISO/IEC TS 18661-3:2015.  */
+#ifndef __STDC_WANT_IEC_60559_TYPES_EXT__
+# undef __STDC_WANT_IEC_60559_TYPES_EXT__
+#endif
+/* Enable extensions specified by ISO/IEC TR 24731-2:2010.  */
+#ifndef __STDC_WANT_LIB_EXT2__
+# undef __STDC_WANT_LIB_EXT2__
+#endif
+/* Enable extensions specified by ISO/IEC 24747:2009.  */
+#ifndef __STDC_WANT_MATH_SPEC_FUNCS__
+# undef __STDC_WANT_MATH_SPEC_FUNCS__
 #endif
 /* Enable extensions on HP NonStop.  */
 #ifndef _TANDEM_SOURCE
 # undef _TANDEM_SOURCE
 #endif
-/* Enable general extensions on Solaris.  */
-#ifndef __EXTENSIONS__
-# undef __EXTENSIONS__
+/* Enable X/Open extensions.  Define to 500 only if necessary
+   to make mbstate_t available.  */
+#ifndef _XOPEN_SOURCE
+# undef _XOPEN_SOURCE
 #endif
 
 
@@ -357,31 +439,21 @@
 # endif
 #endif
 
-/* Define to 1 if `lex' declares `yytext' as a `char *' by default, not a
-   `char[]'. */
+/* Define to 1 if 'lex' declares 'yytext' as a 'char *' by default, not a
+   'char[]'. */
 #undef YYTEXT_POINTER
-
-/* Define to 1 if on MINIX. */
-#undef _MINIX
-
-/* Define to 2 if the system does not provide POSIX.1 features except with
-   this defined. */
-#undef _POSIX_1_SOURCE
-
-/* Define to 1 if you need to in order for `stat' and other things to work. */
-#undef _POSIX_SOURCE
 
 /* Define so that glibc/gnulib argp.h does not typedef error_t. */
 #undef __error_t_defined
 
-/* Define to a type to use for `error_t' if it is not otherwise available. */
+/* Define to a type to use for 'error_t' if it is not otherwise available. */
 #undef error_t
 
-/* Define to `__inline__' or `__inline' if that's what the C compiler
+/* Define to '__inline__' or '__inline' if that's what the C compiler
    calls it, or to nothing if 'inline' is not supported under any name.  */
 #ifndef __cplusplus
 #undef inline
 #endif
 
-/* Define to `unsigned int' if <sys/types.h> does not define. */
+/* Define as 'unsigned int' if <stddef.h> doesn't define. */
 #undef size_t
