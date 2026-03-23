@@ -1,132 +1,75 @@
+# ircd-phatbox
 
-# **IRCD-RATBOX** #
-![logo](http://www.ratbox.org/logo.jpg)
+A modern IRC daemon forked from [ircd-ratbox](https://github.com/irc-archive/ratbox-mirror), built on the security-hardened [mannfred fork](https://github.com/mannfredcom/ircd-ratbox).
 
-## Important ##
-Notes for those among you, who don't bother reading docs:
- * Your install is likely to fail unless you read this document. Completely.
- * Reading INSTALL is now a must, as the old DPATH is now specified
-   when configure is run.
- * You now need to `./configure --prefix="/path/to/install/ircd"`
- * The old config format **WILL NOT WORK**.  Please see [example.conf](file://doc/example.conf) !
- * The old kline format **WILL NOT WORK**.  Please use bantool which
-   will be installed along-side your ircd!
- * Run bantool after each upgrade to ensure your database is in a current format.
-   Failure to do so will result in weird, unexplained crashes.
- * It is _highly_ recommended that you `make clean` or even better `make distclean`
-   in your current source tree before running `./configure`
+## What is this?
 
+ircd-phatbox is an IRC server (IRCd) that continues the ircd-ratbox lineage with a focus on modern toolchains, security, and maintainability. It compiles cleanly with C23 on current systems and drops legacy platform baggage.
 
-## ![markdown logo](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png) About this document ##
+## Key changes from upstream
 
-This document is written in **MARKDOWN**. You may, as you likely are now, read
-it as-is, or you can view it formatted in a viewer such as the ATOM IDE,
-Google Chrome with the Markdown Plus extension, or in ReText.
-There are other viewers, such as for the console, but this will be left as an
-exercise for the reader.
+**Build modernization**
+- Builds with C23 (`-std=gnu23`) on modern clang and gcc
+- Fixed K&R function pointer types that C23 rejects
+- Autotools regenerated for automake 1.18+ / libtool 2.5+
+- SSL include paths properly wired through pkg-config
 
-## Features & Requirements ##
-### A short introduction ###
-ircd-ratbox-3.x now has several major changes over previous version that you
-will notice right away.
+**Security hardening** (inherited from mannfred)
+- FNV hash folding bug fixed (bitwise XOR vs exponentiation — broken since original implementation)
+- DNS resolver overhauled: 32-bit IDs, hash-based lookup, use-after-free fix in callbacks
+- Close-on-exec enforced on all file descriptors
+- D-line/K-line input validation and CIDR range checks
+- SSL/TLS state machine fixes (connection leak, error path handling)
+- Buffer length validation in linebuf
 
-  - Storage of bans in a database, versus the old flat-files.
-  - SSL Client support.
-  - SSL Only Channel support.
-  - Adminwall (think Operwall, but for admins only).
-  - Force Nick Change (FNC).
-  - Support for global CIDR limits.
-  - Connection Throttling.
-  - Please see [whats-new-3.0.txt](file://doc/whats-new-3.0.txt) for more detailed changes.
+**Platform changes** (inherited from mannfred)
+- Windows support removed entirely
+- mbedTLS added as third SSL backend (alongside OpenSSL and GnuTLS)
+- TLS 1.3 support
+- Thread-safe `gmtime_r()` used unconditionally
+- Hybrid 5 era protocol artifacts removed
 
-### Necessary Requirements ###
-  - A supported platform (look below)
-  - A working dynamic load library, unless
-    compiling as static, without module
-    support.
-  - A working lex.  Solaris /usr/ccs/bin/lex
-    appears to be broken, on this system flex
-    should be used.
+## Building
 
-### Feature Specific Requirements ###
-  - For SSL Clients, SSL Challenge controlled OPER feature, and encrypted server links,
-    a working SSL library. Though OpenSSL is still supported, LibreSSL is recommended.
-  - For encrypted oper and (optional) server passwords, a working DES, MD5, or SHA library.
+```sh
+./configure --prefix=/usr/local/ircd-phatbox
+make
+make install
+```
 
+### Requirements
 
-## Supported Distributions
-This code should compile without any warnings on:
- - FreeBSD 6.x/7.x/8.x/9.x *
- - Gentoo & Gentoo Hardened (stable archs)
- - CentOS / Redhat Enterprise 5/6
- - SUSE Linux Enterprise 12**
- - openSUSE Evergreen, Leap 42.1, and Tumbleweed**
- - Debian Etch,
- - OpenSolaris 2008.x?
- - Solaris 10 sparc.
+- C99-capable compiler (C23 recommended)
+- An SSL library: OpenSSL, LibreSSL, GnuTLS, or mbedTLS
+- GNU autotools (autoconf, automake, libtool) if building from git
+- zlib (optional, for compressed server links)
+- flex/lex
 
-\* FREEBSD USERS: if you are compiling with ipv6 you may experience
-  problems with ipv4 due to the way the socket code is written.  To
-  fix this you must: "sysctl net.inet6.ip6.v6only=0"
+### Supported platforms
 
-** SUSE RPM's can be installed from here:
-    https://software.opensuse.org/download.html?project=home%3Adubkat&package=ircd-ratbox
+- Linux (glibc)
+- macOS (Apple Silicon and Intel)
+- FreeBSD
+- Other POSIX systems likely work but are untested
 
+## Configuration
 
+See `doc/example.conf` for a complete configuration reference. The config format is the same as ircd-ratbox 3.x.
 
-## For More Information....
-- To report bugs in ircd-ratbox, send the bug report to ircd-ratbox@lists.ratbox.org
+If upgrading from ircd-ratbox, read `doc/whats-new-3.0.txt`.
 
-- Known bugs are listed in the BUGS file
+## Lineage
 
-- See the INSTALL document for info on configuring and compiling
-  ircd-ratbox.
+```
+ircd-hybrid → ircd-ratbox (2002-2017) → mannfred fork (2026) → ircd-phatbox
+```
 
-- Please read doc/index.txt to get an overview of the current documentation.
+ircd-phatbox 3.2.0 is based on the mannfred fork's main branch, which builds on the ircd-ratbox 3.1-dev trunk with ~200 additional commits of security hardening, bug fixes, and modernization.
 
-- Old Hybrid 5/6 configuration files are no longer supported.  Config files from
-  previous ircd-ratbox versions will need some changes.  The ircd -conftest option
-  is your friend here. Old kline/xline/dline.conf files will have to be converted to
-  the new database format.  A config import utility is provided and installed
-  as bin/bantool.
+## License
 
-- If you are wondering why config.h is practically empty, its because many
-  things that were once in config.h are now specified in the 'general'
-  block of ircd.conf.  Look at example.conf for more information about
-  these options.
+GNU General Public License v2. See `LICENSE` for details.
 
-- The files, /etc/services, /etc/protocols, and /etc/resolv.conf, MUST be
-  readable by the user running the server in order for ircd to start.
-  Errors from adns causing the ircd to refuse to start up are often related
-  to permission problems on these files.
+## Credits
 
-- There is a mailing list for ircd-ratbox.  To subscribe to this list
-  visit http://lists.ratbox.org/cgi-bin/mailman/listinfo/ircd-ratbox
-  Note that this list also gets the commit emails from the CVS server.
-
-- SOLARIS USERS: this code appears to tickle a bug in older gcc and
-  egcs ONLY on 64-bit Solaris7.  gcc-2.95 and SunPro C on 64bit should
-  work fine, and any gcc or SunPro compiled on 32bit.
-
-- DARWIN AND MACOS X USERS: You must be using at least the December 2001
-  Development Tools from Apple to build ircd-ratbox with shared modules.
-  Before then you MUST disable shared modules, as we do not have the proper
-  flags for cc(1) prior to that point to produce shared modules.
-
-- It probably does not compile on AIX, IRIX or libc5 Linux.
-
-- TESTED PLATFORMS:  The code has been tested on the following platforms, and
-  is known to run properly.
-  FreeBSD 6.x/7.x
-  Linux glibc-2.6, glibc-2.7
-  Solaris 2.6/7/8
-  OpenBSD 2.8
-  NetBSD 1.4
-  Cygwin 1.3+ (static modules, no servlink)
-  OpenVMS/Alpha 7.2 (static modules, no servlink)
-
-- Please read doc/whats-new-3.0.txt for information about what is in this release
-
-- Other files recommended for reading: BUGS, INSTALL
-
---------------------------------------------------------------------------------
+See `CREDITS` for the full list of contributors to ircd-ratbox and its ancestors. ircd-phatbox builds on decades of work by the Hybrid, ircd-ratbox, and mannfred development teams.
