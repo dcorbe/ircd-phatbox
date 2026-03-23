@@ -19,7 +19,7 @@ If you don't read this first, we won't help you.
 ******************************* REQUIREMENTS **********************************
 
 New Features - A short introduction:
-- ircd-ratbox-3.x now has several major changes over previous version that you
+- ircd-phatbox-3.x now has several major changes over previous version that you
   will notice right away.
   o Storage of bans in a database, versus the old flat-files.
   o SSL Client support.
@@ -54,17 +54,17 @@ Feature Specific Requirements:
 
 *******************************************************************************
 
-- To report bugs in ircd-ratbox, send the bug report to ircd-ratbox@lists.ratbox.org
+- To report bugs in ircd-phatbox, send the bug report to ircd-phatbox@lists.ratbox.org
 
 - Known bugs are listed in the BUGS file
 
 - See the INSTALL document for info on configuring and compiling
-  ircd-ratbox.
+  ircd-phatbox.
 
 - Please read doc/index.txt to get an overview of the current documentation.
 
 - Old Hybrid 5/6 configuration files are no longer supported.  Config files from
-  previous ircd-ratbox versions will need some changes.  The ircd -conftest option
+  previous ircd-phatbox versions will need some changes.  The ircd -conftest option
   is your friend here. Old kline/xline/dline.conf files will have to be converted to 
   the new database format.  A config import utility is provided and installed 
   as bin/bantool.
@@ -79,8 +79,8 @@ Feature Specific Requirements:
   Errors from adns causing the ircd to refuse to start up are often related
   to permission problems on these files.
 
-- There is a mailing list for ircd-ratbox.  To subscribe to this list
-  visit http://lists.ratbox.org/cgi-bin/mailman/listinfo/ircd-ratbox
+- There is a mailing list for ircd-phatbox.  To subscribe to this list
+  visit http://lists.ratbox.org/cgi-bin/mailman/listinfo/ircd-phatbox
   Note that this list also gets the commit emails from the CVS server.
 
 - FREEBSD USERS: if you are compiling with ipv6 you may experience
@@ -92,7 +92,7 @@ Feature Specific Requirements:
   work fine, and any gcc or SunPro compiled on 32bit.
 
 - DARWIN AND MACOS X USERS: You must be using at least the December 2001
-  Development Tools from Apple to build ircd-ratbox with shared modules.
+  Development Tools from Apple to build ircd-phatbox with shared modules.
   Before then you MUST disable shared modules, as we do not have the proper
   flags for cc(1) prior to that point to produce shared modules.
 

@@ -1,19 +1,19 @@
 ------------------------------------------------------
 -    Oper Challenge/Response System Documentation    -
 - Copyright (C) 2006 Lee Hardy <lee -at- leeh.co.uk> -
-- Copyright (C) 2006-2026 ircd-ratbox development team    -
+- Copyright (C) 2006-2026 ircd-phatbox development team    -
 ------------------------------------------------------
 
 The challenge/response system allows the ability to oper though public key
 authentication, without the insecurity of oper passwords.
 
-The challenge system documented here was redesigned in ircd-ratbox-2.2 and
+The challenge system documented here was redesigned in ircd-phatbox-2.2 and
 is not compatible with earlier versions.
 
 This document does not describe the technical details of the challenge
 system.  If you are reading this as part of the ircd distribution, the
 programs referred to are contained in ratbox-respond, see
-http://respond.ircd-ratbox.org for more information and downloads.
+http://respond.ircd-phatbox.org for more information and downloads.
 
 
 - Challenge basics -
@@ -52,7 +52,7 @@ If aes256 is not available, the following is used instead:
 - Building ratbox-respond -
 ---------------------------
 If you are using the unix based ratbox-respond this must be built.  For the
-windows version, ratbox-winrespond, please see http://respond.ircd-ratbox.org
+windows version, ratbox-winrespond, please see http://respond.ircd-phatbox.org
 
 ratbox-respond takes the challenge from the server, and together with your 
 private key file generates a response to be sent back.  ratbox-respond

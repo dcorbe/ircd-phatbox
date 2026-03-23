@@ -16,16 +16,16 @@
 #    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
 #    Copyright (c) 1995-2004 SUSE Linux AG, Nuernberg, Germany.
-#    Copyright (c) 2016-2026 ircd-ratbox development team.
+#    Copyright (c) 2016-2026 ircd-phatbox development team.
 #    All rights reserved.
 #
 #    Original Author: Kurt Garloff
-#    Modified by: Dan Reidy <dubkat@ratbox.org>
-# /etc/init.d/ircd-ratbox
+#    Modified by: Dan Reidy <dubkat@phatbox.org>
+# /etc/init.d/ircd-phatbox
 #   and its symbolic link
-# /(usr/)sbin/rcircd-ratbox
+# /(usr/)sbin/rcircd-phatbox
 #
-# Template system startup script for some example service/daemon ircd-ratbox
+# Template system startup script for some example service/daemon ircd-phatbox
 #
 # LSB compatible service control script; see http://www.linuxbase.org/spec/
 # 
@@ -36,15 +36,15 @@
 # functions from UL or change the script to work without them.
 #
 ### BEGIN INIT INFO
-# Provides:          ircd_ratbox
+# Provides:          ircd_phatbox
 # Required-Start:    $syslog $remote_fs
 # Should-Start: $time ypbind sendmail
 # Required-Stop:     $syslog $remote_fs
 # Should-Stop: $time ypbind sendmail
 # Default-Start:     3 5
 # Default-Stop:      0 1 2 6
-# Short-Description: ircd-ratbox 
-# Description:       Start ircd-ratbox 
+# Short-Description: ircd-phatbox 
+# Description:       Start ircd-phatbox 
 ### END INIT INFO
 # 
 # Any extensions to the keywords given above should be preceeded by 
@@ -116,21 +116,21 @@
 
 # Check for missing binaries (stale symlinks should not happen)
 # Note: Special treatment of stop for LSB conformance
-RATBOX_BIN=/usr/sbin/ircd-ratbox
-test -x $RATBOX_BIN || { echo "$RATBOX_BIN not installed"; 
+PHATBOX_BIN=/usr/sbin/ircd-phatbox
+test -x $PHATBOX_BIN || { echo "$PHATBOX_BIN not installed"; 
         if [ "$1" = "stop" ]; then exit 0;
         else exit 5; fi; }
 
 # Check for existence of needed config file and read it
-RATBOX_CONFIG=/etc/ratbox/ircd/ircd.conf
-test -r $RATBOX_CONFIG || { echo "$RATBOX_CONFIG not existing";
+PHATBOX_CONFIG=/etc/phatbox/ircd/ircd.conf
+test -r $PHATBOX_CONFIG || { echo "$PHATBOX_CONFIG not existing";
         if [ "$1" = "stop" ]; then exit 0;
         else exit 6; fi; }
 
-RATBOX_PID_DIR="/var/run/ratbox/ircd/"
-RATBOX_PID="${RATBOX_PID_DIR}/pid"
+PHATBOX_PID_DIR="/var/run/phatbox/ircd/"
+PHATBOX_PID="${PHATBOX_PID_DIR}/pid"
 # Read config   
-# . $RATBOX_CONFIG
+# . $PHATBOX_CONFIG
 
 # Source LSB init functions
 # providing start_daemon, killproc, pidofproc, 
@@ -175,21 +175,21 @@ rc_reset
 
 case "$1" in
     start)
-        echo -n "Starting ircd-ratbox "
+        echo -n "Starting ircd-phatbox "
         ## Start daemon with startproc(8). If this fails
         ## the return value is set appropriately by startproc.
-        install   -o ratbox -g ratbox -d "${RATBOX_PID_DIR}"
-        startproc -u ratbox -g ratbox $RATBOX_BIN
+        install   -o phatbox -g phatbox -d "${PHATBOX_PID_DIR}"
+        startproc -u phatbox -g phatbox $PHATBOX_BIN
 
         # Remember status and be verbose
         rc_status -v
         ;;
     stop)
-        echo -n "Shutting down ircd-ratbox "
+        echo -n "Shutting down ircd-phatbox "
         ## Stop daemon with killproc(8) and if this fails
         ## killproc sets the return value according to LSB.
 
-        killproc -TERM $RATBOX_BIN
+        killproc -TERM $PHATBOX_BIN
 
         # Remember status and be verbose
         rc_status -v
@@ -224,10 +224,10 @@ case "$1" in
         ## do this on signal 1 (SIGHUP).
         ## If it does not support it, restart.
 
-        echo -n "Reload service ircd-ratbox "
+        echo -n "Reload service ircd-phatbox "
         ## if it supports it:
-        killproc -HUP $RATBOX_BIN
-        #touch /var/run/ircd-ratbox.pid
+        killproc -HUP $PHATBOX_BIN
+        #touch /var/run/ircd-phatbox.pid
         rc_status -v
 
         ## Otherwise:
@@ -239,9 +239,9 @@ case "$1" in
         ## signaling, do nothing (!)
 
         # If it supports signaling:
-        echo -n "Reload service ircd-ratbox "
-        killproc -HUP $RATBOX_BIN
-        #touch /var/run/ircd-ratbox.pid
+        echo -n "Reload service ircd-phatbox "
+        killproc -HUP $PHATBOX_BIN
+        #touch /var/run/ircd-phatbox.pid
         rc_status -v
         
         ## Otherwise if it does not support reload:
@@ -249,7 +249,7 @@ case "$1" in
         #rc_status -v
         ;;
     status)
-        echo -n "Checking for service ircd-ratbox "
+        echo -n "Checking for service ircd-phatbox "
         ## Check status with checkproc(8), if process is running
         ## checkproc will return with exit status 0.
 
@@ -262,7 +262,7 @@ case "$1" in
         # 5--199 reserved (5--99 LSB, 100--149 distro, 150--199 appl.)
         
         # NOTE: checkproc returns LSB compliant status values.
-        checkproc $RATBOX_BIN
+        checkproc $PHATBOX_BIN
         # NOTE: rc_status knows that we called this init script with
         # "status" option and adapts its messages accordingly.
         rc_status -v
@@ -272,7 +272,7 @@ case "$1" in
         ## argument to this init script which is required for a reload.
         ## Note: probe is not (yet) part of LSB (as of 1.9)
 
-        test $RATBOX_CONFIG -nt $RATBOX_PID && echo reload
+        test $PHATBOX_CONFIG -nt $PHATBOX_PID && echo reload
         ;;
     *)
         echo "Usage: $0 {start|stop|status|try-restart|restart|force-reload|reload|probe}"

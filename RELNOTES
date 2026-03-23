@@ -2,14 +2,14 @@
 Please note as of this release, the 3.0 branch is now marked as 'stable'. 
 The 2.2 branch will no longer be maintained.
 
-This is the current release version of the 'stable' tree of ircd-ratbox.
+This is the current release version of the 'stable' tree of ircd-phatbox.
 
 If you are upgrading from 2.2, you must read doc/whats-new-3.0.txt
 If you are upgrading from 2.1, you must read doc/whats-new-2.2.txt
 If you are upgrading from 2.0, you must also read doc/whats-new-2.1.txt
 If you are upgrading from 1.x, you must also read doc/whats-new-2.0.txt
 
--- ircd-ratbox-3.0.9
+-- ircd-phatbox-3.0.9
 - Some code modernization
 - Runtime nicklen support, no more recompile needed, just restart
 - Format security cleanups
@@ -17,12 +17,12 @@ If you are upgrading from 1.x, you must also read doc/whats-new-2.0.txt
 - Add libevent support for i/o loops
   
 
--- ircd-ratbox-3.0.8
+-- ircd-phatbox-3.0.8
 - fix embarrassing CAPAB crash - All admins should upgrade immediately
 - various doc cleanups
 
 
--- ircd-ratbox-3.0.7
+-- ircd-phatbox-3.0.7
 - remove sigio code. its buggyness makes it more trouble than its worth
 - stop logging to files when they are commented out in the ircd.conf
 - add help for GUNGLINE
@@ -31,10 +31,10 @@ If you are upgrading from 1.x, you must also read doc/whats-new-2.0.txt
 - update included sqlite3 code to something recent
 - documentation cleanups/updates
 
--- ircd-ratbox-3.0.6
+-- ircd-phatbox-3.0.6
 - fix a user-triggerable crash in /links handling when flatten_links is
   disabled 
--- ircd-ratbox-3.0.5
+-- ircd-phatbox-3.0.5
 - fix a bug with reading help files
 - add debugging in for dealing with a kline removal bug
 - fix /rehash tdlines and /rehash bans so they actually do something with
@@ -45,10 +45,10 @@ If you are upgrading from 1.x, you must also read doc/whats-new-2.0.txt
 - add -fno-strict-aliasing as this is now needed for gcc 4.4
 - GNUTLS code now picks up new keys/certificates on rehash
 
--- ircd-ratbox-3.0.4
+-- ircd-phatbox-3.0.4
 - Actually release from the right branch.  Oops.
 
--- ircd-ratbox-3.0.3
+-- ircd-phatbox-3.0.3
 - fix forward dns resolution, only used by connect::host with hostnames
 - check return values on rb_socketpair that can cause a crash if 
   socketpair fails
@@ -57,7 +57,7 @@ If you are upgrading from 1.x, you must also read doc/whats-new-2.0.txt
   be checked
 - fix a CHALLENGE related core dump
 
--- ircd-ratbox-3.0.2
+-- ircd-phatbox-3.0.2
 - fix ssl+zip close detection
 - fix openssl detection when openssl is a static library
 - add gungline support
@@ -67,7 +67,7 @@ If you are upgrading from 1.x, you must also read doc/whats-new-2.0.txt
 - actually update the internal timekeeping when using sigio 
 - fix an off by one error in ziplink stats processing  
 
--- ircd-ratbox-3.0.1
+-- ircd-phatbox-3.0.1
 - call rb_helper_close on bandb errors to kill off old bandb processes
 - report correct files/line numbers for spoof warnings
 - sid in the serverinfo struct should be 4 bytes, not 3
@@ -82,14 +82,14 @@ If you are upgrading from 1.x, you must also read doc/whats-new-2.0.txt
 - report adding throttles when an oper is set umode +r
 - report throttle stats in /stats T
 
--- ircd-ratbox-3.0.0
+-- ircd-phatbox-3.0.0
 - fix a crash with the the global cidr code
 - fix a core dump in bantool if bantool cannot open the database
 - report failure to open logfiles in a more useful way
 - check to see if we have both read and write access to the ban database
 - fix a build error on OS X Leopard
 
--- ircd-ratbox-3.0.0rc3
+-- ircd-phatbox-3.0.0rc3
 - fix a leak that would cause the ircd to leak 128 bytes per connection
 - a few minor cleanups of cases where malloc/free were used instead of
   rb_malloc/rb_free
@@ -98,14 +98,14 @@ If you are upgrading from 1.x, you must also read doc/whats-new-2.0.txt
   and keep track of those values as a 64bit integer as well so they do
   not wrap
 
--- ircd-ratbox-3.0.0rc2
+-- ircd-phatbox-3.0.0rc2
 - log ERROR commands to file regardless of hide_error_messages setting 
 - restrict JOIN 0 to only allow 0 by itself, no multiple zeros or zeros
   before or after commas
 - honor -logfile command line option
 - fix timerfd_create check
 
--- ircd-ratbox-3.0.0rc1
+-- ircd-phatbox-3.0.0rc1
 - fix a bug in comment parsing in the config file
 - have bandb honor -basedir option
 - if ssld to work on win32 should you ever desire such a thing and a 
@@ -123,7 +123,7 @@ If you are upgrading from 1.x, you must also read doc/whats-new-2.0.txt
 - Add some work arounds to avoid OPENSSL_applink on some platforms
 
 
--- ircd-ratbox-3.0.0beta12
+-- ircd-phatbox-3.0.0beta12
 - add support for ssl only oper and auth blocks
 - do not show whowas ip info if the ip is 0
 - fix admindline to actually work
@@ -141,7 +141,7 @@ If you are upgrading from 1.x, you must also read doc/whats-new-2.0.txt
 - put a bit of sanity checking in rb_vsnprintf_append
 - some portability cleanups 
 
--- ircd-ratbox-3.0.0beta11
+-- ircd-phatbox-3.0.0beta11
 - remove the remains of servlink_path from the config file parser
 - userlog now logs the users IP address as well as their hostname
 - whowas now supports showing the users IP address as well as 
@@ -152,11 +152,11 @@ If you are upgrading from 1.x, you must also read doc/whats-new-2.0.txt
 - really, really fix the block heap garbage collection code 
 
 
--- ircd-ratbox-3.0.0beta10
+-- ircd-phatbox-3.0.0beta10
 - fix a case a passing a NULL to match()
 - properly fix a crash in the block heap garbage collection code
 
--- ircd-ratbox-3.0.0beta9
+-- ircd-phatbox-3.0.0beta9
 - fix a hang with the resolver using epoll
 - add dns source port randomization
 - add a vhost_dns/vhost6_dns option to control which IP addresses the
@@ -172,7 +172,7 @@ If you are upgrading from 1.x, you must also read doc/whats-new-2.0.txt
   via the block allocator
 
 
--- ircd-ratbox-3.0.0beta8
+-- ircd-phatbox-3.0.0beta8
 - some cleanups in the checksplit code
 - some cleanups in the /trace code
 - show reasons for failed outbound SSL handshakes to opers
@@ -185,10 +185,10 @@ If you are upgrading from 1.x, you must also read doc/whats-new-2.0.txt
 - add some functions for random number generation for the nossl case in
   libratbox
 
--- ircd-ratbox-3.0.0beta7
+-- ircd-phatbox-3.0.0beta7
 - my release building script manage to not include libratbox, oops
 
--- ircd-ratbox-3.0.0beta6
+-- ircd-phatbox-3.0.0beta6
 - change -lock klines and friends to now be ADMINKLINE etc
 - default to only supporting TS6 
 - fix remote kline reasons
@@ -201,7 +201,7 @@ If you are upgrading from 1.x, you must also read doc/whats-new-2.0.txt
 - fix compile error when zlib is not found
 - remove some restrictions on k/d/x/resv reasons that are no longer needed
 
--- ircd-ratbox-3.0.0beta5
+-- ircd-phatbox-3.0.0beta5
 - fix things so that --enable-assert=soft compiles again
 - fix a typo in mkpasswd
 - add admin only -lock klines, doing KLINE -lock will allow admins to
@@ -217,7 +217,7 @@ If you are upgrading from 1.x, you must also read doc/whats-new-2.0.txt
 - fix --enable-assert=soft
 - fix libratbox build on OS X and others
 
--- ircd-ratbox-3.0.0beta4
+-- ircd-phatbox-3.0.0beta4
 - some configure/makefile changes that are useful for package maintainers
 - various bantool fixes
 - fix a bug with the command hash that could cause the ircd to crash
@@ -231,7 +231,7 @@ If you are upgrading from 1.x, you must also read doc/whats-new-2.0.txt
 - fix a possible crash with ssl connections closing quickly
 - perserve errno so that connect failures report the correct error
 
--- ircd-ratbox-3.0.0beta3
+-- ircd-phatbox-3.0.0beta3
 - fix an issue with CAP END releasing clients before it should
 - report bandb errors in a useful fashion
 - strip tabs when reading from help/motd etc
@@ -241,7 +241,7 @@ If you are upgrading from 1.x, you must also read doc/whats-new-2.0.txt
 - stop libltdl from installing an empty include directory
 - improve SIGCHLD handling in the ircd
 
--- ircd-ratbox-3.0.0beta2
+-- ircd-phatbox-3.0.0beta2
 - honor global_cidr setting
 - fix a bug in bantool that improperly parsed X-lines with spaces them
 - fix user@host spoofs
@@ -249,7 +249,7 @@ If you are upgrading from 1.x, you must also read doc/whats-new-2.0.txt
 - fix libratbox build with openssl disabled
 - don't spin on openssl accepts when there is no data
 
--- ircd-ratbox-3.0.0beta1
+-- ircd-phatbox-3.0.0beta1
 - No release notes, see doc/whats-new-3.0.txt
 
 

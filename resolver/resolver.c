@@ -1,10 +1,10 @@
 /*
- * resolver.c: dns resolving daemon for ircd-ratbox
+ * resolver.c: dns resolving daemon for ircd-phatbox
  * Based on many things ripped from ratbox-services
- * and ircd-ratbox itself and who knows what else
+ * and ircd-phatbox itself and who knows what else
  *
  * Copyright (C) 2003-2005 Lee Hardy <leeh@leeh.co.uk>
- * Copyright (C) 2003-2026 ircd-ratbox development team
+ * Copyright (C) 2003-2026 ircd-phatbox development team
  * Copyright (C) 2005-2008 Aaron Sethman <androsyn@ratbox.org>
  */
 
@@ -408,7 +408,7 @@ main(int argc, char **argv)
 	if(res_helper == NULL)
 	{
 		fprintf(stderr,
-			"This is ircd-ratbox resolver.	You know you aren't supposed to run me directly?\n");
+			"This is ircd-phatbox resolver.	You know you aren't supposed to run me directly?\n");
 		fprintf(stderr, "Bleep blorp.\n");
 		exit(1);
 	}

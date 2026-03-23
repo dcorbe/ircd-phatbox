@@ -2,7 +2,7 @@
 
 
 spitshell=cat
-package=ircd-ratbox
+package=ircd-phatbox
 
 echo "Extracting $package/src/version.c..."
 
@@ -65,6 +65,7 @@ static const char *infotext[] =
   "Copyright 1988, 1989, 1990, 1991 University of Oulu, Computing Center",
   "Copyright (c) 1996-2001 Hybrid Development Team", 
   "Copyright (c) 2002-2015 ircd-ratbox Development Team",
+  "Copyright (c) 2026 ircd-phatbox Development Team",
   "",
   "This program is free software; you can redistribute it and/or",
   "modify it under the terms of the GNU General Public License as",
@@ -84,7 +85,7 @@ $spitshell >>version.c <<!SUB!THISTOO!
 };
 
 void 
-ratbox_version(const char **pver, const char **pserno, const char **pgeneration, const char **pplatform, const char **pcreation)
+phatbox_version(const char **pver, const char **pserno, const char **pgeneration, const char **pplatform, const char **pcreation)
 {
 	if(pver != NULL)
 		*pver = ircd_version;
@@ -99,7 +100,7 @@ ratbox_version(const char **pver, const char **pserno, const char **pgeneration,
 }
 
 void
-ratbox_infotext(const char ***infoptr)
+phatbox_infotext(const char ***infoptr)
 {
 	if(infoptr == NULL)
 		return;

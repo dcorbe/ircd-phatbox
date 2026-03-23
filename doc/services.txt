@@ -17,8 +17,8 @@ to ircd:
 
    Ability to specify the names of services servers in ircd.conf:
    service {
-       name = "services.ircd-ratbox.org";
-       name = "backup-services.ircd-ratbox.org";
+       name = "services.ircd-phatbox.org";
+       name = "backup-services.ircd-phatbox.org";
    };
 
    These must be specified for certain features to work.  You may specify as

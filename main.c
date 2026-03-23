@@ -25,10 +25,10 @@
  *
  */
 
-int ratbox_main(int, char **);
+int phatbox_main(int, char **);
 
 int
 main(int argc, char **argv)
 {
-	return ratbox_main(argc, argv);
+	return phatbox_main(argc, argv);
 }

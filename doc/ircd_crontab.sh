@@ -1,13 +1,13 @@
 #!/bin/sh
 #
 # IRCD-RATBOX Crontab Script
-# Copyright (C) 2009-2026 ircd-ratbox development team
+# Copyright (C) 2009-2026 ircd-phatbox development team
 
 # You will want to change this to the root directory your IRCD runs from
-IRCD_PATH="/home/user/ircd-ratbox"
+IRCD_PATH="/home/user/ircd-phatbox"
 
 # The location of your pid file, relative to IRCD_PATH (you can probably leave this alone)
-PID_FILE="etc/ircd-ratbox.pid"
+PID_FILE="etc/ircd-phatbox.pid"
 
 
 # run: crontab -e
@@ -23,7 +23,7 @@ PID_FILE="etc/ircd-ratbox.pid"
 
 # Leave the rest alone.
 
-test -x "${IRCD_PATH}/bin/ircd-ratbox" || exit 1
+test -x "${IRCD_PATH}/bin/ircd-phatbox" || exit 1
 
 if [ -f "${IRCD_PATH}/${PID_FILE}" ] ; then
 	PID=`cat "${IRCD_PATH}/${PID_FILE}"`
@@ -33,5 +33,5 @@ if [ -f "${IRCD_PATH}/${PID_FILE}" ] ; then
 	rm -f "${IRCD_PATH}/${PID_FILE}"
 fi
 
-${IRCD_PATH}/bin/ircd-ratbox -conftest &>/dev/null && ${IRCD_PATH}/bin/ircd-ratbox
+${IRCD_PATH}/bin/ircd-phatbox -conftest &>/dev/null && ${IRCD_PATH}/bin/ircd-phatbox
 exit $?;

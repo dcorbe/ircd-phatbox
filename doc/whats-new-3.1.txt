@@ -1,9 +1,9 @@
-The following is a list of noteworthy changes between ircd-ratbox 3.0
-and ircd-ratbox-3.1.
+The following is a list of noteworthy changes between ircd-phatbox 3.0
+and ircd-phatbox-3.1.
 
 Installation
 ------------
- o The name of the executable that is generated is now ircd-ratbox 
+ o The name of the executable that is generated is now ircd-phatbox 
    instead of ircd.  Any crontabs should be updated to reflect this change.  
    Also you should remove any old executables in the $PREFIX/bin directory
    named ircd, the install process will not do this for you.

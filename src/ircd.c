@@ -183,16 +183,16 @@ print_startup(int pid)
 {
 	const char *ircd_version, *serno;
 	
-	ratbox_version(&ircd_version, &serno, NULL, NULL, NULL);
+	phatbox_version(&ircd_version, &serno, NULL, NULL, NULL);
 	
-	printf("ircd-ratbox: version %s %s\n", ircd_version, serno);
-	printf("ircd-ratbox: %s\n", rb_lib_version());
-	printf("ircd-ratbox: pid %d\n", pid);
+	printf("ircd-phatbox: version %s %s\n", ircd_version, serno);
+	printf("ircd-phatbox: %s\n", rb_lib_version());
+	printf("ircd-phatbox: pid %d\n", pid);
 #ifndef RATBOX_PROFILE
-	printf("ircd-ratbox: running in %s mode from %s\n",
+	printf("ircd-phatbox: running in %s mode from %s\n",
 	       !server_state_foreground ? "background" : "foreground", ConfigFileEntry.dpath);
 #else
-	printf("ircd-ratbox: running in foreground mode from %s for profiling\n", ConfigFileEntry.dpath);
+	printf("ircd-phatbox: running in foreground mode from %s for profiling\n", ConfigFileEntry.dpath);
 #endif
 }
 
@@ -216,7 +216,7 @@ init_sys(void)
 		{
 			fprintf(stderr, "ERROR: Shell FD limits are too low.\n");
 			fprintf(stderr,
-				"ERROR: ircd-ratbox reserves %d FDs, shell limits must be above this\n", MAX_BUFFER);
+				"ERROR: ircd-phatbox reserves %d FDs, shell limits must be above this\n", MAX_BUFFER);
 			exit(EXIT_FAILURE);
 		}
 		return;
@@ -418,7 +418,7 @@ check_pidfile(const char *filename)
 			pidfromfile = atoi(buff);
 			if(!kill(pidfromfile, 0))
 			{
-				printf("ircd-ratbox: daemon is already running\n");
+				printf("ircd-phatbox: daemon is already running\n");
 				exit(-1);
 			}
 		}
@@ -478,7 +478,7 @@ diecb(const char *buf)
 
 
 int
-ratbox_main(int argc, char *argv[])
+phatbox_main(int argc, char *argv[])
 {
 	char emptyname[] = "";
 	int r;
@@ -499,11 +499,11 @@ ratbox_main(int argc, char *argv[])
 	if(printVersion)
 	{
 		const char *ircd_version, *serno;
-		ratbox_version(&ircd_version, &serno, NULL, NULL, NULL);
+		phatbox_version(&ircd_version, &serno, NULL, NULL, NULL);
 		
-		printf("ircd-ratbox: version %s %s\n", ircd_version, serno);
-		printf("ircd-ratbox: %s\n", rb_lib_version());
-		printf("ircd-ratbox: configure options\n");
+		printf("ircd-phatbox: version %s %s\n", ircd_version, serno);
+		printf("ircd-phatbox: %s\n", rb_lib_version());
+		printf("ircd-phatbox: configure options\n");
 		puts(RATBOX_CONFIGURE_OPTS);
 		exit(EXIT_SUCCESS);
 	}
@@ -526,7 +526,7 @@ ratbox_main(int argc, char *argv[])
 	if(r > 0)
 	{
 		fprintf(stderr,
-			"ERROR: Unable to start ircd-ratbox: found %d syntax error(s) whilst loading config file.  Try running with -conftest\n",
+			"ERROR: Unable to start ircd-phatbox: found %d syntax error(s) whilst loading config file.  Try running with -conftest\n",
 			r);
 		return 1;
 	}
@@ -539,7 +539,7 @@ ratbox_main(int argc, char *argv[])
 	if(r > 0)
 	{
 		fprintf(stderr,
-			"ERROR: Unable to start ircd-ratbox: found %d error(s) whilst loading config file.  Try running with -conftest\n",
+			"ERROR: Unable to start ircd-phatbox: found %d error(s) whilst loading config file.  Try running with -conftest\n",
 			r);
 		return 1;
 	}
@@ -763,7 +763,7 @@ server_reboot(void)
 	execv(SPATH, (void *)myargv);
 
 	/* use this if execv of SPATH fails */
-	snprintf(path, sizeof(path), "%s/bin/ircd-ratbox", ConfigFileEntry.dpath);
+	snprintf(path, sizeof(path), "%s/bin/ircd-phatbox", ConfigFileEntry.dpath);
 
 	execv(path, (void *)myargv);
 	exit(-1);

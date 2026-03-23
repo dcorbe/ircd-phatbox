@@ -29,7 +29,7 @@ AC_PROG_CC_C99
 CFLAGS="$CFLAGS $saved_CFLAGS"
 
 if test x"$ac_cv_prog_cc_c99" = "xno"; then
-	AC_ERROR([ircd-ratbox requires a C99 capable compiler])
+	AC_ERROR([ircd-phatbox requires a C99 capable compiler])
 fi
         
 

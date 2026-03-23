@@ -10,7 +10,7 @@ AUTOMAKE_OPTIONS = 1.10
 
 dnl Sneaky way to get an Id tag into the configure script
 AC_COPYRIGHT([])
-AC_INIT([ircd-ratbox],[devel])
+AC_INIT([ircd-phatbox],[devel])
 AC_CONFIG_AUX_DIR([libltdl/config])
 AC_CONFIG_MACRO_DIR([libltdl/m4])
 
@@ -19,7 +19,7 @@ AM_INIT_AUTOMAKE([subdir-objects])
 
 AM_CONFIG_HEADER(include/setup.h)
 
-AC_PREFIX_DEFAULT(/usr/local/ircd-ratbox)
+AC_PREFIX_DEFAULT(/usr/local/ircd-phatbox)
 AC_GNU_SOURCE
 
 dnl Checks for programs.
@@ -33,7 +33,7 @@ AC_PROG_CC_C99
 
 
 if test x"$ac_cv_prog_cc_c99" = "xno"; then
-	AC_ERROR([ircd-ratbox requires a C99 capable compiler])
+	AC_ERROR([ircd-phatbox requires a C99 capable compiler])
 fi
 
 
@@ -119,17 +119,18 @@ fi
 
 
   
-WARNLIST="  
-	all  
+WARNLIST="
+	all
 	cast-qual
 	missing-declarations
-	missing-prototypes  
+	missing-prototypes
 	nested-externs
 	shadow
 	write-strings
 	no-unused
 	unused-function
-	unused-variable" 
+	unused-variable
+	no-incompatible-function-pointer-types" 
 
 for x in $WARNLIST; do 
 	if cc_accepts_flag -W$x; then
@@ -189,7 +190,7 @@ AC_ARG_ENABLE(ipv6,AC_HELP_STRING([--disable-ipv6],[Disable IPv6 support (not re
 AC_C_BIGENDIAN
 
 dnl Check for stdarg.h - if we can't find it, halt configure
-AC_CHECK_HEADER(stdarg.h, , [AC_MSG_ERROR([** stdarg.h could not be found - ircd-ratbox will not compile without it **])])
+AC_CHECK_HEADER(stdarg.h, , [AC_MSG_ERROR([** stdarg.h could not be found - ircd-phatbox will not compile without it **])])
 
 AC_FUNC_ALLOCA
 
@@ -356,6 +357,8 @@ fi
 
 if test "$cf_enable_openssl" != no; then
 	AC_DEFINE(USE_CHALLENGE, 1, [Define to enable CHALLENGE support, requires OpenSSL])
+	SSL_INCLUDES="$OpenSSL_CFLAGS"
+	SSL_LIBS="$OpenSSL_LIBS"
 fi
 
 
@@ -496,7 +499,7 @@ dnl Server Tweaks
 dnl =============
 
 AC_ARG_ENABLE(services,
-AC_HELP_STRING([--enable-services],[Enable ratbox-services compatibility code.]),
+AC_HELP_STRING([--enable-services],[Enable phatbox-services compatibility code.]),
 [ratbox_services=$enableval], [ratbox_services=no])
 
 M_SERVICES=""
@@ -548,7 +551,7 @@ else
 	rb_cv_libexecdir=$libexecdir
 fi
 
-libexecdir=`eval "echo ${rb_cv_libexecdir}/ircd-ratbox"`
+libexecdir=`eval "echo ${rb_cv_libexecdir}/ircd-phatbox"`
 AC_DEFINE_DIR(LIBEXEC_DIR, libexecdir, [Prefix where to install non-user executables.])
 
 dnl lets see what libtool thinks our suffix is...
@@ -606,5 +609,5 @@ fi
 
 echo "Modules ........................ $tmpresult"
 echo "Assert debugging ............... $assert"
-echo "ratbox-services compatibility .. $ratbox_services"
+echo "phatbox-services compatibility . $ratbox_services"
 echo

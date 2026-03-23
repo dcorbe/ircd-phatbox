@@ -1,7 +1,7 @@
 /*
  *  dns.c: An interface to the resolver daemon
  *  Copyright (C) 2005 Aaron Sethman <androsyn@ratbox.org>
- *  Copyright (C) 2005-2026 ircd-ratbox development team
+ *  Copyright (C) 2005-2026 ircd-phatbox development team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -240,15 +240,15 @@ start_resolver(void)
 
 		if(access(fullpath, X_OK) == -1)
 		{
-			snprintf(fullpath, sizeof(fullpath), "%s/libexec/ircd-ratbox/resolver",
+			snprintf(fullpath, sizeof(fullpath), "%s/libexec/ircd-phatbox/resolver",
 				 ConfigFileEntry.dpath);
 			if(access(fullpath, X_OK) == -1)
 			{
 				ilog(L_MAIN,
-				     "Unable to execute resolver in %s or %s/libexec/ircd-ratbox",
+				     "Unable to execute resolver in %s or %s/libexec/ircd-phatbox",
 				     LIBEXEC_DIR, ConfigFileEntry.dpath);
 				sendto_realops_flags(UMODE_ALL, L_ALL,
-						     "Unable to execute resolver in %s or %s/libexec/ircd-ratbox",
+						     "Unable to execute resolver in %s or %s/libexec/ircd-phatbox",
 						     LIBEXEC_DIR, ConfigFileEntry.dpath);
 				return 1;
 			}
@@ -258,7 +258,7 @@ start_resolver(void)
 		resolver_path = rb_strdup(fullpath);
 	}
 
-	dns_helper = rb_helper_start("ircd-ratbox resolver daemon", resolver_path, parse_dns_reply, restart_resolver_cb);
+	dns_helper = rb_helper_start("ircd-phatbox resolver daemon", resolver_path, parse_dns_reply, restart_resolver_cb);
 
 	if(dns_helper == NULL)
 	{

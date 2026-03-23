@@ -13,20 +13,20 @@ servicesdir	= @moduledir@/autoload
 
 AM_CFLAGS = $(WARNFLAGS)
 
-ircd_ratbox_SOURCES = main.c
-bin_PROGRAMS = ircd-ratbox
+ircd_phatbox_SOURCES = main.c
+bin_PROGRAMS = ircd-phatbox
 
 if !STATIC_MODULES
 
 SUBDIRS = @LTDL_SUBDIR@ libratbox src modules tools doc help bandb ssld resolver
 
-ircd_ratbox_LDADD =  src/libcore.la libratbox/src/libratbox.la $(LIBLTDL) @LIBJEMALLOC@ @LIBTCMALLOC@
-ircd_ratbox_LDFLAGS = $(EXTRA_FLAGS) -dlopen self
+ircd_phatbox_LDADD =  src/libcore.la libratbox/src/libratbox.la $(LIBLTDL) @LIBJEMALLOC@ @LIBTCMALLOC@
+ircd_phatbox_LDFLAGS = $(EXTRA_FLAGS) -dlopen self
 
 else
 
 SUBDIRS = @LTDL_SUBDIR@ libratbox modules src tools doc help bandb ssld resolver
-ircd_ratbox_LDADD = libratbox/src/libratbox.la modules/libmodules.la src/libcore.la modules/static_modules.o $(LIBLTDL) $(DLOPEN) @LIBJEMALLOC@ @LIBTCMALLOC@
+ircd_phatbox_LDADD = libratbox/src/libratbox.la modules/libmodules.la src/libcore.la modules/static_modules.o $(LIBLTDL) $(DLOPEN) @LIBJEMALLOC@ @LIBTCMALLOC@
 
 
 endif

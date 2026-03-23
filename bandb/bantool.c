@@ -1,10 +1,10 @@
 /**
- *  ircd-ratbox: A slightly useful ircd.
- *  bantool.c: The ircd-ratbox database managment tool.
+ *  ircd-phatbox: A slightly useful ircd.
+ *  bantool.c: The ircd-phatbox database managment tool.
  *
  *  Copyright (C) 1990 Jarkko Oikarinen and University of Oulu, Co Center
  *  Copyright (C) 1996-2002 Hybrid Development Team
- *  Copyright (C) 2002-2026 ircd-ratbox development team
+ *  Copyright (C) 2002-2026 ircd-phatbox development team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -867,7 +867,7 @@ print_help(int i_exit)
 {
 	/* *INDENT-OFF* */
 	fprintf(stderr, "bantool v.%s - the %s database tool.\n", SERIALNUM, PATCHLEVEL);
-	fprintf(stderr, "Copyright (C) 2008-2026 ircd-ratbox development team\n");
+	fprintf(stderr, "Copyright (C) 2008-2026 ircd-phatbox development team\n");
 	fprintf(stderr, "This program is distributed in the hope that it will be useful,\n"
 		"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
 		"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"

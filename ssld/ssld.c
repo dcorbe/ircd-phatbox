@@ -1,7 +1,7 @@
 /*
- *  ssld.c: The ircd-ratbox ssl/zlib helper daemon thingy
+ *  ssld.c: The ircd-phatbox ssl/zlib helper daemon thingy
  *  Copyright (C) 2007 Aaron Sethman <androsyn@ratbox.org>
- *  Copyright (C) 2007-2026 ircd-ratbox development team
+ *  Copyright (C) 2007-2026 ircd-phatbox development team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1290,7 +1290,7 @@ main(int argc, char **argv)
 	if(s_ctlfd == NULL || s_pipe == NULL || s_pid == NULL)
 	{
 		fprintf(stderr,
-			"This is ircd-ratbox ssld.  You know you aren't supposed to run me directly?\n");
+			"This is ircd-phatbox ssld.  You know you aren't supposed to run me directly?\n");
 		fprintf(stderr, "We're sorry all circuits are busy now, will you please try your call again later? Code:1D Message:10-T \n");
 		exit(1);
 	}

@@ -54,7 +54,7 @@
 #define HPATH  HELP_DIR "/opers"
 
 /* files */
-#define SPATH	 BINPATH "/ircd-ratbox"	/* ircd executable */
+#define SPATH	 BINPATH "/ircd-phatbox"	/* ircd executable */
 #define CPATH	 ETCPATH "/ircd.conf"	/* ircd.conf file */
 #define DBPATH	 ETCPATH "/ban.db"
 #define MPATH	 ETCPATH "/ircd.motd"	/* MOTD file */

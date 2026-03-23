@@ -87,7 +87,7 @@ void ircd_shutdown(const char *reason) RB_noreturn;
 
 uintptr_t get_maxrss(void);
 
-int ratbox_main(int argc, char **argv);
+int phatbox_main(int argc, char **argv);
 extern bool testing_conf;
 extern bool conf_parse_failure;
 extern int maxconnections;

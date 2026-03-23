@@ -954,7 +954,7 @@ void
 user_welcome(struct Client *source_p)
 {
 	const char *ircd_version, *creation;
-	ratbox_version(&ircd_version, NULL, NULL, NULL, &creation);
+	phatbox_version(&ircd_version, NULL, NULL, NULL, &creation);
 	SetCork(source_p);
 	sendto_one_numeric(source_p, s_RPL(RPL_WELCOME), ServerInfo.network_name, source_p->name);
 	sendto_one_numeric(source_p, s_RPL(RPL_YOURHOST), get_listener_name(source_p->localClient->listener),

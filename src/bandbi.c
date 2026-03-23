@@ -2,7 +2,7 @@
  * An interface to the ban db.
  *
  * Copyright (C) 2006 Lee Hardy <lee -at- leeh.co.uk>
- * Copyright (C) 2006-2026 ircd-ratbox development team
+ * Copyright (C) 2006-2026 ircd-phatbox development team
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -95,13 +95,13 @@ bandb_start(void)
 
 		if(access(fullpath, X_OK) == -1)
 		{
-			snprintf(fullpath, sizeof(fullpath), "%s/libexec/ircd-ratbox/bandb",
+			snprintf(fullpath, sizeof(fullpath), "%s/libexec/ircd-phatbox/bandb",
 				 ConfigFileEntry.dpath);
 
 			if(access(fullpath, X_OK) == -1)
 			{
 				ilog(L_MAIN,
-				     "Unable to execute bandb in %s or %s/libexec/ircd-ratbox",
+				     "Unable to execute bandb in %s or %s/libexec/ircd-phatbox",
 				     LIBEXEC_DIR, ConfigFileEntry.dpath);
 				return 0;
 			}
@@ -110,7 +110,7 @@ bandb_start(void)
 	}
 
 
-	bandb_helper = rb_helper_start("ircd-ratbox bandb daemon", bandb_path, bandb_parse, bandb_restart_cb);
+	bandb_helper = rb_helper_start("ircd-phatbox bandb daemon", bandb_path, bandb_parse, bandb_restart_cb);
 
 	if(bandb_helper == NULL)
 	{

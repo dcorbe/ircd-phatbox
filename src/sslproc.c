@@ -1,7 +1,7 @@
 /*
  *  sslproc.c: An interface to ssld
  *  Copyright (C) 2007 Aaron Sethman <androsyn@ratbox.org>
- *  Copyright (C) 2007-2026 ircd-ratbox development team
+ *  Copyright (C) 2007-2026 ircd-phatbox development team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -237,19 +237,19 @@ start_ssldaemon(int count, const char *ssl_ca_cert, const char *ssl_cert, const 
 
 		if(access(fullpath, X_OK) == -1)
 		{
-			snprintf(fullpath, sizeof(fullpath), "%s/libexec/ircd-ratbox/ssld",
+			snprintf(fullpath, sizeof(fullpath), "%s/libexec/ircd-phatbox/ssld",
 				 ConfigFileEntry.dpath);
 			if(access(fullpath, X_OK) == -1)
 			{
 				ilog(L_MAIN,
-				     "Unable to execute ssld%s in %s/libexec/ircd-ratbox",
+				     "Unable to execute ssld%s in %s/libexec/ircd-phatbox",
 				     ConfigFileEntry.dpath, LIBEXEC_DIR);
 				return 0;
 			}
 		}
 		ssld_path = rb_strdup(fullpath);
 	}
-	rb_strlcpy(buf, "-ircd-ratbox ssld daemon", sizeof(buf));
+	rb_strlcpy(buf, "-ircd-phatbox ssld daemon", sizeof(buf));
 	parv[0] = buf;
 	parv[1] = NULL;
 

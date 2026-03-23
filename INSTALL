@@ -1,7 +1,7 @@
-ircd-ratbox installation instructions
+ircd-phatbox installation instructions
 
 Copyright (c) 2001-2002 ircd-hybrid development team
-Copyright (c) 2002-2026 ircd-ratbox development team
+Copyright (c) 2002-2026 ircd-phatbox development team
 
  __               __                 __   __
 |__|.----.----.--|  |___.----.---.-.|  |_|  |--.-----.--.--.
@@ -10,7 +10,7 @@ Copyright (c) 2002-2026 ircd-ratbox development team
 
 +-------------------------------------------------------+
 |                        IMPORTANT                      |
-| If you are upgrading from ANY VERSION of ircd-ratbox, |
+| If you are upgrading from ANY VERSION of ircd-phatbox, |
 | see the instructions under #3 UPGRADING .             |
 +-------------------------------------------------------+
 
@@ -28,14 +28,14 @@ An example.conf for EFnet is in doc/ with values "approved" on 12 December 2001.
 +-----------------------------------------------------------------------------+
 |                                  IMPORTANT                                  |
 | At a minimum, you really ought to use the --prefix=/some/place option.      |
-| By default, configure will select /usr/local/ircd-ratbox - YOU DO *NOT* WANT|
+| By default, configure will select /usr/local/ircd-phatbox - YOU DO *NOT* WANT|
 | THAT! You may *NOT* run the IRCD as root! The IRCD user needs to be able    |
 | to write to its own directories. You have been warned!                      |
 +-----------------------------------------------------------------------------+
 
     I. ./configure --prefix=/home/user/ircd
 
-    II. Configure ircd-ratbox for running with minimal resources on a 64bit VPS.
+    II. Configure ircd-phatbox for running with minimal resources on a 64bit VPS.
         This creates a 32bit IRCD which takes up less memory:
           CFLAGS="-m32" ./configure --prefix=/home/user/ircd
 
@@ -93,26 +93,26 @@ Note: These are some special optional parameters to the configure script
       malloc on Linux at least.
   --enable-ocf-services 
       This enables the hooks required for OpenChanfix(not packaged with
-      ircd-ratbox)
+      ircd-phatbox)
 
    
 
 #3 UPGRADING
 
-Note: If this is a clean install of ircd-ratbox, you may skip this section.
+Note: If this is a clean install of ircd-phatbox, you may skip this section.
 
-  1. Upgrading from ircd-ratbox-2.x or ircd-hybrid-7.x:
+  1. Upgrading from ircd-phatbox-2.x or ircd-hybrid-7.x:
 
-  If you have an older version of ircd-ratbox or ircd-hybrid and you have
+  If you have an older version of ircd-phatbox or ircd-hybrid and you have
   klines, dlines, resvs, and xline config files, keep reading.
 
-  ircd-ratbox no longer uses flat-file based configs for these types of entries,
+  ircd-phatbox no longer uses flat-file based configs for these types of entries,
   instead they are stored in a database. To prevent accidental clobbering or
   leaving behind old, unsupported modules, it would be best to install
-  ircd-ratbox into a clean location.
+  ircd-phatbox into a clean location.
 
   After you have finished installing the IRCD, you will likely wish to import
-  your old ban files. ircd-ratbox-3 includes a tool to manage the database.
+  your old ban files. ircd-phatbox-3 includes a tool to manage the database.
   Importing, backing up, error checking and reclaiming lost space are supported.
   For more information, run /path/to/ircd/bin/bantool with no parameters.
 
@@ -124,11 +124,11 @@ Note: If this is a clean install of ircd-ratbox, you may skip this section.
     II. Import old ban configs:
       /path/to/ircd/bin/bantool -i -d /path/to/oldircd/etc
 
-  2. Upgrading from ircd-ratbox-3.x:
+  2. Upgrading from ircd-phatbox-3.x:
 
 +-----------------------------------------------------------------------------+
 |                                  IMPORTANT                                  |
-| EVERY TIME YOU UPGRADE ircd-ratbox-3 YOU NEED TO ISSUE THIS COMMAND.        |
+| EVERY TIME YOU UPGRADE ircd-phatbox-3 YOU NEED TO ISSUE THIS COMMAND.        |
 | FAILURE TO DO SO CAN CAUSE YOUR IRCD TO CORE!                               |
 |   /path/to/ircd/bin/bantool -u                                              |
 +-----------------------------------------------------------------------------+
@@ -141,14 +141,14 @@ Note: If this is a clean install of ircd-ratbox, you may skip this section.
   For bug reports, general questions, you may find us on #ratbox on EFnet.
 
   If you do fix anything, however, please post a context or unified diff to
-  ircd-ratbox@lists.ratbox.org so the fixes can be incorporated into
-  the next release of ircd-ratbox.
+  ircd-phatbox@lists.ratbox.org so the fixes can be incorporated into
+  the next release of ircd-phatbox.
 
-  If ircd-ratbox crashes on you, please submit a bug report and include the
-  gdb backtrace or corefile to ircd-ratbox@lists.ratbox.org
+  If ircd-phatbox crashes on you, please submit a bug report and include the
+  gdb backtrace or corefile to ircd-phatbox@lists.ratbox.org
 
-  There is a low-volume mailing list for discussion of ircd-ratbox issues.
-  To subscribe, visit: http://lists.ratbox.org/cgi-bin/mailman/listinfo/ircd-ratbox
+  There is a low-volume mailing list for discussion of ircd-phatbox issues.
+  To subscribe, visit: http://lists.ratbox.org/cgi-bin/mailman/listinfo/ircd-phatbox
 
 #5 NOTES
 
@@ -158,14 +158,14 @@ Note: If this is a clean install of ircd-ratbox, you may skip this section.
   1. Change to the directory containing the core file;
 
   2. Run gdb on the binary and the core file (in the /path/to/ircd directory),
-     with an unmodified ircd-ratbox installation, an example command line
+     with an unmodified ircd-phatbox installation, an example command line
      is below. This will be useless if you used 'make install-strip':
 
        gdb bin/ircd ircd.core
 
   3. At the "(gdb)" prompt, enter the command "bt"
 
-  4. Save the output of the backtrace command and submit it to ircd-ratbox@lists.ratbox.org
+  4. Save the output of the backtrace command and submit it to ircd-phatbox@lists.ratbox.org
 
   5. Be sure to save the ircd binary, the modules, and the core file in a safe
      place in case the developers need to look deeper than backtrace provides.

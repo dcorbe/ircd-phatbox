@@ -36,7 +36,7 @@ jobs:
 
       - name: Configure
         run: |
-          ./configure --prefix=/usr/local/ircd-ratbox
+          ./configure --prefix=/usr/local/ircd-phatbox
 
       - name: Build
         run: |
@@ -45,26 +45,26 @@ jobs:
 
       - name: Install (staged)
         run: |
-          sudo mkdir -p /usr/local/ircd-ratbox/logs
+          sudo mkdir -p /usr/local/ircd-phatbox/logs
           make install DESTDIR="$PWD/_install"
 
       - name: Smoke check
         run: |
           set -euo pipefail
-          if [ -x ./ircd-ratbox ]; then
-            bin=./ircd-ratbox
+          if [ -x ./ircd-phatbox ]; then
+            bin=./ircd-phatbox
           elif [ -x src/ircd ]; then
             bin=src/ircd
           elif [ -x ircd/ircd ]; then
             bin=ircd/ircd
-          elif [ -x "_install/usr/local/ircd-ratbox/bin/ircd-ratbox" ]; then
-            bin=_install/usr/local/ircd-ratbox/bin/ircd-ratbox
+          elif [ -x "_install/usr/local/ircd-phatbox/bin/ircd-phatbox" ]; then
+            bin=_install/usr/local/ircd-phatbox/bin/ircd-phatbox
           elif [ -x "_install/usr/local/sbin/ircd" ]; then
             bin=_install/usr/local/sbin/ircd
           elif [ -x "_install/usr/local/bin/ircd" ]; then
             bin=_install/usr/local/bin/ircd
           else
-            bin=$(find . -maxdepth 5 -type f \( -name ircd -o -name ircd-ratbox \) -perm -111 | head -n 1)
+            bin=$(find . -maxdepth 5 -type f \( -name ircd -o -name ircd-phatbox \) -perm -111 | head -n 1)
           fi
           if [ -z "${bin:-}" ]; then
             echo "No ircd binary found for smoke check."

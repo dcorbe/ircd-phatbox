@@ -1,7 +1,7 @@
 /* bandb/bandb.c
  *
  * Copyright (C) 2006 Lee Hardy <lee -at- leeh.co.uk>
- * Copyright (C) 2006-2026 ircd-ratbox development team
+ * Copyright (C) 2006-2026 ircd-phatbox development team
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -270,7 +270,7 @@ main(int argc, char *argv[])
 	if(bandb_helper == NULL)
 	{
 		fprintf(stderr,
-			"This is ircd-ratbox bandb.  You aren't supposed to run me directly. Maybe you want bantool?\n");
+			"This is ircd-phatbox bandb.  You aren't supposed to run me directly. Maybe you want bantool?\n");
 		fprintf(stderr,
 			"However I will print my Id tag\n");
 		fprintf(stderr, "Have a nice day\n");
@@ -283,7 +283,7 @@ main(int argc, char *argv[])
 	dbconn = rsdb_init(dbpath, db_error_cb, bandb_helper);
 	if(dbconn == NULL)
 	{
-	        fprintf(stderr, "ircd-ratbox bandb reports it cannot open the database, giving up\n");
+	        fprintf(stderr, "ircd-phatbox bandb reports it cannot open the database, giving up\n");
 	        exit(1);
         }
 	check_schema();

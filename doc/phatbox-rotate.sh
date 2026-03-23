@@ -1,7 +1,7 @@
 #!/bin/sh
 #
-#  ratbox-rotate.sh - Rotate your IRCD's logs
-#  Copyleft (C) 2016-2026 ircd-ratbox development team.
+#  phatbox-rotate.sh - Rotate your IRCD's logs
+#  Copyleft (C) 2016-2026 ircd-phatbox development team.
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 #
 # To have the script run every month, type this:
 #
-#     @monthly test -x /path/to/ircd/bin/ratbox-rotate.sh && /path/to/ircd/bin/ratbox-rotate.sh >/dev/null 2>&1
+#     @monthly test -x /path/to/ircd/bin/phatbox-rotate.sh && /path/to/ircd/bin/phatbox-rotate.sh >/dev/null 2>&1
 #
 #
 

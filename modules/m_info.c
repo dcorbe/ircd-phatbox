@@ -910,7 +910,7 @@ static void
 send_info_text(struct Client *source_p)
 {
 	const char **text; 
-	ratbox_infotext(&text);
+	phatbox_infotext(&text);
 	while(*text)
 	{
 		sendto_one_numeric(source_p, s_RPL(RPL_INFO), *text++);
@@ -932,7 +932,7 @@ send_birthdate_online_time(struct Client *source_p)
 	const char *creation, *generation;
 	char tbuf[26];		/* this needs to be 26 - see ctime_r manpage */
 
-	ratbox_version(NULL, NULL, &generation, NULL, &creation);
+	phatbox_version(NULL, NULL, &generation, NULL, &creation);
 	sendto_one(source_p, ":%s %d %s :Birth Date: %s, compile # %s",
 		   get_id(&me, source_p), RPL_INFO,
 		   get_id(source_p, source_p), creation, generation);

@@ -1,10 +1,11 @@
 /*
- *  ircd-ratbox: A slightly useful ircd.
+ *  ircd-phatbox: A slightly useful ircd.
  *  version.h: A header defining the patchlevel.
  *
  *  Copyright (C) 1990 Jarkko Oikarinen and University of Oulu, Co Center
  *  Copyright (C) 1996-2002 Hybrid Development Team
  *  Copyright (C) 2002-2026 ircd-ratbox development team
+ *  Copyright (C) 2026 ircd-phatbox development team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,9 +24,9 @@
  */
 
 #ifndef PATCHLEVEL
-#define PATCHLEVEL   "ircd-ratbox-3.1beta"
+#define PATCHLEVEL   "ircd-phatbox-3.2.0"
 #endif
 
-void ratbox_version(const char **pver, const char **pserno, const char **pgeneration, const char **pplatform, const char **pcreation);
-void ratbox_infotext(const char ***infotext);
+void phatbox_version(const char **pver, const char **pserno, const char **pgeneration, const char **pplatform, const char **pcreation);
+void phatbox_infotext(const char ***infotext);
 

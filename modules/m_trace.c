@@ -176,7 +176,7 @@ m_trace(struct Client *client_p, struct Client *source_p, int parc, const char *
 				if(IsOper(source_p) || IsExemptShide(source_p) || !ConfigServerHide.flatten_links)
 				{
 					const char *ircd_version;
-					ratbox_version(&ircd_version, NULL, NULL, NULL, NULL);
+					phatbox_version(&ircd_version, NULL, NULL, NULL, NULL);
 					sendto_one_numeric(source_p, RPL_TRACELINK,
 							   form_str(RPL_TRACELINK),
 							   ircd_version,
