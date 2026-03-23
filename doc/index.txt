@@ -1,27 +1,27 @@
 
-Here is the overview of the documents in the doc/ directory.
+Overview of documents in the doc/ directory.
 
-old/CIDR.txt		- Description of CIDR in IPv4
-Tao-of-IRC.940110       - No comment...
 challenge.txt           - Overview of the challenge/response system for
                           obtaining operator status
 example.conf            - An example ircd.conf file describing most of the
                           user settable options
-genssl.sh		- creates a self signed certificate and DH parameters file
-genopercert.sh          - Creates a self signed certificate for opers.
-ircd_crontab.sh         - Crontab script for ircd-phatbox.
-ratbox-rotate.sh        - Crontab script to rotate ratbox log files.
-hooks.txt		- Overview of the hooks available
-index.txt		- This file
+example.efnet.conf      - Example configuration for EFnet
+genssl.sh               - Creates a self-signed certificate and DH parameters
+genopercert.sh          - Creates a self-signed certificate for opers
+ircd_crontab.sh         - Crontab script for ircd-phatbox
+phatbox-rotate.sh       - Crontab script to rotate log files
+hooks.txt               - Overview of the hooks available
+index.txt               - This file
 ircd.motd               - A default ircd.motd used by make install
-logfiles.txt		- Description of formatting of some logfiles
-modeg.txt               - An in depth description of the server side silence
-                          user mode (+g)
+logfiles.txt            - Description of formatting of some logfiles
+modeg.txt               - Description of server-side silence user mode (+g)
 modes.txt               - A list of all user and channel modes
 operguide.txt           - EFnet operator's guide
 server-version-info     - Overview of the flags shown in /version
-whats-new-*.txt		- What new features are available
+services.txt            - Services daemon compatibility
+whats-new-*.txt         - What new features are available in each version
 
-Also in the contrib/ directory you will find:
-example_module.c - An example module, detailing what the code in a module
-		   does.  Useful for building your own modules.
+Also in the contrib/ directory:
+example_module.c        - An example module for building your own modules
+
+Historical documentation is in the old/ subdirectory.
