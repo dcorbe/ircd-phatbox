@@ -915,6 +915,7 @@ conf_set_generic_value_cb(confentry_t * entry, conf_t * conf, struct conf_items 
 	case CF_INT:
 	case CF_TIME:
 	case CF_YESNO:
+		/* NB: writes 4 bytes — all CF_YESNO targets must be int, not bool */
 		*((int *)item->data) = entry->number;
 		break;
 	case CF_STRING:
