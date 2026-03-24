@@ -10,11 +10,12 @@ modulesdir      = @moduledir@/autoload
 coredir         = @moduledir@
 servicesdir     = @moduledir@/autoload
 libmodulesdir	= @moduledir@
-AM_CPPFLAGS = -I../libratbox/include -I../include $(LTDLINCL) @SSL_INCLUDES@
+AM_CPPFLAGS = -I../libratbox/include -I../include @SSL_INCLUDES@
 
 AM_CFLAGS = $(WARNFLAGS)
 
-MODULE_FLAGS = $(EXTRA_FLAGS) -avoid-version 
+MODULE_FLAGS = $(EXTRA_FLAGS) -avoid-version
+MODULE_LIBS = ../src/libcore.la
 
 if !STATIC_MODULES
 

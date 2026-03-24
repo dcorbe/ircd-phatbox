@@ -18,15 +18,15 @@ bin_PROGRAMS = ircd-phatbox
 
 if !STATIC_MODULES
 
-SUBDIRS = @LTDL_SUBDIR@ libratbox src modules tools doc help bandb ssld resolver
+SUBDIRS = libratbox src modules tools doc help bandb ssld resolver
 
-ircd_phatbox_LDADD =  src/libcore.la libratbox/src/libratbox.la $(LIBLTDL) @LIBJEMALLOC@ @LIBTCMALLOC@
-ircd_phatbox_LDFLAGS = $(EXTRA_FLAGS) -dlopen self
+ircd_phatbox_LDADD = src/libcore.la libratbox/src/libratbox.la @LIBJEMALLOC@ @LIBTCMALLOC@
+ircd_phatbox_LDFLAGS = $(EXTRA_FLAGS)
 
 else
 
-SUBDIRS = @LTDL_SUBDIR@ libratbox modules src tools doc help bandb ssld resolver
-ircd_phatbox_LDADD = libratbox/src/libratbox.la modules/libmodules.la src/libcore.la modules/static_modules.o $(LIBLTDL) $(DLOPEN) @LIBJEMALLOC@ @LIBTCMALLOC@
+SUBDIRS = libratbox modules src tools doc help bandb ssld resolver
+ircd_phatbox_LDADD = libratbox/src/libratbox.la modules/libmodules.la src/libcore.la modules/static_modules.o @LIBJEMALLOC@ @LIBTCMALLOC@
 
 
 endif

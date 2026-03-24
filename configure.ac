@@ -11,8 +11,8 @@ AUTOMAKE_OPTIONS = 1.10
 dnl Sneaky way to get an Id tag into the configure script
 AC_COPYRIGHT([])
 AC_INIT([ircd-phatbox],[devel])
-AC_CONFIG_AUX_DIR([libltdl/config])
-AC_CONFIG_MACRO_DIR([libltdl/m4])
+AC_CONFIG_AUX_DIR([autoconf])
+AC_CONFIG_MACRO_DIR([m4])
 
 
 AM_INIT_AUTOMAKE([subdir-objects])
@@ -142,17 +142,10 @@ if cc_accepts_flag -fno-delete-null-pointer-checks; then
 	CFLAGS="$CFLAGS -fno-delete-null-pointer-checks"
 fi
 
-LT_CONFIG_LTDL_DIR([libltdl])
-
 LT_INIT([dlopen])
 
-LTDL_INIT([subproject])
-
-if test xyes = x"$with_included_ltdl"; then
-	AC_SUBST(LTDL_SUBDIR, libltdl)
-else
-	AC_SUBST(LTDL_SUBDIR, '')
-fi
+AC_CHECK_HEADERS([dlfcn.h])
+AC_SEARCH_LIBS([dlopen], [dl])
 
 LIBTOOL="$LIBTOOL --silent"
 

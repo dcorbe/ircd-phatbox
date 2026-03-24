@@ -9,7 +9,7 @@ libcoredir	= @libdir@
 
 AM_YFLAGS = -d
 AM_CFLAGS = $(WARNFLAGS)
-AM_CPPFLAGS = -I../libratbox/include $(LTDLINCL) @OpenSSL_CFLAGS@ @PICFLAGS@
+AM_CPPFLAGS = -I../libratbox/include @OpenSSL_CFLAGS@ @PICFLAGS@
 
 BUILT_SOURCES = version.c
 
@@ -62,7 +62,7 @@ libcore_LTLIBRARIES = libcore.la
 libcore_la_LDFLAGS = $(EXTRA_FLAGS) -avoid-version
 
 libcore_la_DEPENDENCIES = ../libratbox/src/libratbox.la
-libcore_la_LIBADD = ../libratbox/src/libratbox.la $(LIBLTDL) @OpenSSL_LIBS@ @LIBJEMALLOC@ @LIBTCMALLOC@
+libcore_la_LIBADD = ../libratbox/src/libratbox.la @OpenSSL_LIBS@ @LIBJEMALLOC@ @LIBTCMALLOC@
 
 
 install-exec-hook: install-libcoreLTLIBRARIES

@@ -41,7 +41,7 @@
 
 #ifndef STATIC_MODULES
 
-#include "ltdl.h"
+#include <dlfcn.h>
 
 
 
@@ -135,12 +135,6 @@ void
 modules_init(void)
 {
 #ifndef STATIC_MODULES
-	if(lt_dlinit())
-	{
-		ilog(L_MAIN, "lt_dlinit failed");
-		exit(0);
-	}
-
 	mod_add_cmd(&modload_msgtab);
 	mod_add_cmd(&modunload_msgtab);
 	mod_add_cmd(&modreload_msgtab);
@@ -609,7 +603,7 @@ unload_one_module(struct module *mod, int warn)
 		break;
 	}
 
-	lt_dlclose(mod->address);
+	dlclose(mod->address);
 
 	mod_del_list(mod);
 	
@@ -636,7 +630,7 @@ unload_one_module(struct module *mod, int warn)
 int
 load_a_module(const char *path, int warn, int core)
 {
-	lt_dlhandle tmpptr = NULL;
+	void * tmpptr = NULL;
 	struct module *mod;
 	char *mod_basename;
 	const char *ver;
@@ -646,11 +640,11 @@ load_a_module(const char *path, int warn, int core)
 
 	mod_basename = rb_basename(path);
 
-	tmpptr = lt_dlopen(path);
+	tmpptr = dlopen(path, RTLD_NOW | RTLD_GLOBAL);
 
 	if(tmpptr == NULL)
 	{
-		const char *err = lt_dlerror();
+		const char *err = dlerror();
 
 		sendto_realops_flags(UMODE_ALL, L_ALL, "Error loading module %s: %s", mod_basename, err);
 		ilog(L_MAIN, "Error loading module %s: %s", mod_basename, err);
@@ -664,10 +658,10 @@ load_a_module(const char *path, int warn, int core)
 	 * as a single int in order to determine the API version.
 	 *	-larne.
 	 */
-	mapi_base = lt_dlsym(tmpptr, "_rb_mheader");
+	mapi_base = dlsym(tmpptr, "_rb_mheader");
 	if(mapi_base == NULL)
 	{
-		mapi_base = lt_dlsym(tmpptr, "__rb_mheader");
+		mapi_base = dlsym(tmpptr, "__rb_mheader");
 	}
 
 	mapi_version = (int *)mapi_base;
@@ -677,7 +671,7 @@ load_a_module(const char *path, int warn, int core)
 		sendto_realops_flags(UMODE_ALL, L_ALL,
 				     "Data format error: module %s has no MAPI header.", mod_basename);
 		ilog(L_MAIN, "Data format error: module %s has no MAPI header.", mod_basename);
-		lt_dlclose(tmpptr);
+		dlclose(tmpptr);
 		rb_free(mod_basename);
 		return -1;
 	}
@@ -692,7 +686,7 @@ load_a_module(const char *path, int warn, int core)
 				ilog(L_MAIN, "Module %s indicated failure during load.", mod_basename);
 				sendto_realops_flags(UMODE_ALL, L_ALL,
 						     "Module %s indicated failure during load.", mod_basename);
-				lt_dlclose(tmpptr);
+				dlclose(tmpptr);
 				rb_free(mod_basename);
 				return -1;
 			}
@@ -726,7 +720,7 @@ load_a_module(const char *path, int warn, int core)
 		     mod_basename, MAPI_VERSION(*mapi_version));
 		sendto_realops_flags(UMODE_ALL, L_ALL,
 				     "Module %s has unknown/unsupported MAPI version %d.", mod_basename, *mapi_version);
-		lt_dlclose(tmpptr);
+		dlclose(tmpptr);
 		rb_free(mod_basename);
 		return -1;
 	}
