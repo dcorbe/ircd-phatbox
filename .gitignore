@@ -11,6 +11,25 @@
 
 # Autotools generated
 autom4te.cache/
+aclocal.m4
+configure
+Makefile.in
+*/Makefile.in
+*/*/Makefile.in
+include/setup.h.in
+install-mod.sh.in
+libratbox/include/libratbox_config.h.in
+autoconf/
+m4/
+compile
+config.guess
+config.sub
+depcomp
+install-sh
+ltmain.sh
+missing
+mkinstalldirs
+ylwrap
 config.status
 config.log
 config.h
