@@ -632,6 +632,7 @@ phatbox_main(int argc, char *argv[])
 	init_ssld();
 
 	load_conf_settings();
+	charset_apply_config();
 	if(ServerInfo.bandb_path == NULL)
 		ServerInfo.bandb_path = rb_strdup(DBPATH);
 
