@@ -163,6 +163,9 @@ void *hash_find_data_len(hash_f * type, const void *hashindex, size_t len);
 
 void hash_del_hnode(hash_f * type, hash_node *node);
 
+/* Rebuild all CMP_IRCCMP hash tables after charset mode change */
+void hash_rebuild_all_irccmp(void);
+
 void hash_stats(struct Client *);
 void hash_get_memusage(hash_f * type, size_t *memusage, size_t *entries);
 

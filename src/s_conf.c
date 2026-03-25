@@ -24,6 +24,7 @@
 
 #include "stdinc.h"
 #include "struct.h"
+#include "charset.h"
 #include "s_conf.h"
 #include "s_newconf.h"
 #include "s_serv.h"
@@ -681,6 +682,7 @@ rehash(int sig)
 		rehash_global_cidr_tree();
 
 	rehash_dns_vhost();
+	charset_apply_config();
 	return;
 }
 
@@ -744,6 +746,8 @@ set_default_conf(void)
 	ConfigFileEntry.anti_nick_flood = YES;
 	ConfigFileEntry.anti_away_flood = YES;
 	ConfigFileEntry.disable_fake_channels = NO;
+	ConfigFileEntry.unicode_nicks = NO;
+	ConfigFileEntry.unicode_channels = NO;
 	ConfigFileEntry.max_nick_time = 20;
 	ConfigFileEntry.max_nick_changes = 5;
 	ConfigFileEntry.max_away_time = 30;

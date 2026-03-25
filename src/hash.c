@@ -700,3 +700,67 @@ hash_get_memusage(hash_f *hf, size_t * entries, size_t * memusage)
 	if(entries != NULL)
 		*entries = cnt;
 }
+
+/*
+ * hash_rebuild_all_irccmp - rehash all CMP_IRCCMP hash tables.
+ *
+ * Called when the charset mode changes (strict ↔ permissive) because
+ * the hash fold function changes, making existing hash values invalid.
+ * Walks every entry, recomputes its hash, and moves it to the correct bucket.
+ */
+void
+hash_rebuild_all_irccmp(void)
+{
+	rb_dlink_node *hptr;
+
+	RB_DLINK_FOREACH(hptr, list_of_hashes.head)
+	{
+		hash_f *hf = hptr->data;
+		if(hf->cmptype != CMP_IRCCMP)
+			continue;
+
+		unsigned int tablesize = 1U << hf->hashbits;
+
+		/* Collect all nodes into a temporary list */
+		rb_dlink_list tmplist = { NULL, NULL, 0 };
+		for(unsigned int i = 0; i < tablesize; i++)
+		{
+			if(hf->htable[i] == NULL)
+				continue;
+			rb_dlink_node *ptr, *next;
+			RB_DLINK_FOREACH_SAFE(ptr, next, hf->htable[i]->head)
+			{
+				hash_node *hnode = ptr->data;
+				rb_dlinkDelete(ptr, hf->htable[i]);
+				rb_dlinkAddAlloc(hnode, &tmplist);
+			}
+			/* Free the now-empty bucket list */
+			rb_free(hf->htable[i]);
+			hf->htable[i] = NULL;
+		}
+
+		/* Re-insert all nodes with fresh hash values */
+		rb_dlink_node *ptr, *next;
+		RB_DLINK_FOREACH_SAFE(ptr, next, tmplist.head)
+		{
+			hash_node *hnode = ptr->data;
+			rb_dlinkDelete(ptr, &tmplist);
+			rb_free(ptr);
+
+			size_t hashlen = hf->hashlen > 0
+				? IRCD_MIN(hnode->keylen, hf->hashlen)
+				: hnode->keylen;
+			uint32_t hashv = do_hfunc(hf, hnode->key, hashlen);
+			hnode->hashv = hashv;
+
+			if(hf->htable[hashv] == NULL)
+			{
+				hf->htable[hashv] = rb_malloc(sizeof(rb_dlink_list));
+				hf->htable[hashv]->head = NULL;
+				hf->htable[hashv]->tail = NULL;
+				hf->htable[hashv]->length = 0;
+			}
+			rb_dlinkAdd(hnode, &hnode->node, hf->htable[hashv]);
+		}
+	}
+}

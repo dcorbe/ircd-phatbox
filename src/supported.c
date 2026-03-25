@@ -80,6 +80,7 @@
 
 #include "stdinc.h"
 #include "struct.h"
+#include "charset.h"
 #include "client.h"
 #include "numeric.h"
 #include "ircd.h"
@@ -251,6 +252,18 @@ isupport_targmax(const void *ptr)
 	return result;
 }
 
+static const char *
+isupport_charset_casemapping(const void *ptr)
+{
+	return active_charset->casemapping_name;
+}
+
+static const char *
+isupport_charset_name(const void *ptr)
+{
+	return active_charset->charset_name;
+}
+
 void
 init_isupport(void)
 {
@@ -276,8 +289,8 @@ init_isupport(void)
 	add_isupport("CALLERID", isupport_string, "g");
 	add_isupport("SAFELIST", isupport_string, "");
 	add_isupport("ELIST", isupport_string, "CTU");
-	add_isupport("CASEMAPPING", isupport_string, "rfc1459");
-	add_isupport("CHARSET", isupport_string, "ascii");
+	add_isupport("CASEMAPPING", isupport_charset_casemapping, NULL);
+	add_isupport("CHARSET", isupport_charset_name, NULL);
 	add_isupport("NICKLEN", isupport_intptr, &nicklen);
 	add_isupport("CHANNELLEN", isupport_intptr, &channellen);
 	add_isupport("TOPICLEN", isupport_intptr, &ConfigChannel.topiclen);
