@@ -22,6 +22,7 @@ libcore_la_SOURCES =			\
         bandbi.c                        \
         cache.c                         \
         channel.c                       \
+        charset.c                       \
         class.c                         \
         client.c                        \
 	dns.c                           \

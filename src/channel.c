@@ -25,6 +25,7 @@
 #include "stdinc.h"
 #include "struct.h"
 #include "channel.h"
+#include "charset.h"
 #include "client.h"
 #include "hash.h"
 #include "hook.h"
@@ -315,9 +316,9 @@ check_channel_name(const char *name)
 	if(name == NULL)
 		return 0;
 
-	for(; *name; ++name)
+	while(*name)
 	{
-		if(!IsChanChar(*name))
+		if(!active_charset->is_valid_chan_char(&name))
 			return 0;
 	}
 

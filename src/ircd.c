@@ -29,6 +29,7 @@
 #include "struct.h"
 #include "ircd.h"
 #include "channel.h"
+#include "charset.h"
 #include "class.h"
 #include "client.h"
 #include "hash.h"
@@ -609,6 +610,7 @@ phatbox_main(int argc, char *argv[])
 	rb_init_prng(NULL, RB_PRNG_DEFAULT);
 
 	init_main_logfile(logFileName);
+	charset_init();
 	init_hash();
 	init_host_hash();
 	init_client();

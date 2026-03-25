@@ -29,14 +29,18 @@
  * match - compare name with mask, mask may contain * and ? as wildcards
  * match - returns 1 on successful match, 0 otherwise
  *
- * mask_match - compare one mask to another
- * match_esc - compare with support for escaping chars
- * match_cidr - compares u!h@addr with u!h@addr/cidr
- * match_ips - comapres addr with addr/cidr in ascii form
+ * These dispatch through active_charset for charset-aware matching.
+ * The _rfc1459 variants always use ASCII/RFC1459 rules.
+ *
+ * mask_match - compare one mask to another (always RFC1459)
+ * match_cidr - compares u!h@addr with u!h@addr/cidr (always RFC1459)
+ * match_ips - compares addr with addr/cidr in ascii form (always RFC1459)
  */
 int match(const char *mask, const char *name);
-int mask_match(const char *oldmask, const char *newmask);
 int match_esc(const char *mask, const char *name);
+int match_rfc1459(const char *mask, const char *name);
+int match_esc_rfc1459(const char *mask, const char *name);
+int mask_match(const char *oldmask, const char *newmask);
 int match_cidr(const char *mask, const char *name);
 int match_ips(const char *mask, const char *addr);
 
@@ -128,12 +132,15 @@ extern const unsigned int CharAttrs[];
 
 
 /*
- * irccmp - case insensitive comparison of s1 and s2
+ * irccmp - case insensitive string comparison.
+ *
+ * irccmp() dispatches through active_charset for charset-aware comparison.
+ * irccmp_rfc1459() always uses the RFC1459 ToUpper table (ASCII + bracket mapping).
  */
+int irccmp(const char *s1, const char *s2);
 
-/* inline versions */
 static inline int
-irccmp(const char *s1, const char *s2)
+irccmp_rfc1459(const char *s1, const char *s2)
 {
 	const unsigned char *str1 = (const unsigned char *)s1;
 	const unsigned char *str2 = (const unsigned char *)s2;

@@ -21,6 +21,7 @@
 #include "ircd.h"
 #include "struct.h"
 #include "match.h"
+#include "charset.h"
 #include "s_conf.h"
 #include "s_log.h"
 #include "send.h"
@@ -40,7 +41,7 @@
 #define MATCH_MAX_CALLS 512	/* ACK! This dies when it's less that this
 				   and we have long lines to parse */
 int
-match(const char *mask, const char *name)
+match_rfc1459(const char *mask, const char *name)
 {
 	const unsigned char *m = (const unsigned char *)mask;
 	const unsigned char *n = (const unsigned char *)name;
@@ -197,7 +198,7 @@ mask_match(const char *mask, const char *name)
  * as '*', '?', '#' and '@'
  */
 int
-match_esc(const char *mask, const char *name)
+match_esc_rfc1459(const char *mask, const char *name)
 {
 	const unsigned char *m = (const unsigned char *)mask;
 	const unsigned char *n = (const unsigned char *)name;
@@ -1010,3 +1011,28 @@ const unsigned int CharAttrs[] = {
 /* 0xFE */ CHAN_C | NONEOS_C,
 /* 0xFF */ CHAN_C | NONEOS_C
 };
+
+/*
+ * Charset-dispatching wrappers.
+ *
+ * These call through active_charset so that permissive (UTF-8) mode
+ * can substitute Unicode-aware implementations.  In strict mode they
+ * resolve to the _rfc1459 functions defined above.
+ */
+int
+match(const char *mask, const char *name)
+{
+	return active_charset->wild_match(mask, name);
+}
+
+int
+match_esc(const char *mask, const char *name)
+{
+	return active_charset->wild_match_esc(mask, name);
+}
+
+int
+irccmp(const char *s1, const char *s2)
+{
+	return active_charset->irc_cmp(s1, s2);
+}
