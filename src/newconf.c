@@ -2588,6 +2588,8 @@ static struct conf_items conf_general_table[] =
 
 	{ "anti_spam_exit_message_time", CF_TIME,  NULL, 0, &ConfigFileEntry.anti_spam_exit_message_time },
 	{ "disable_fake_channels",	 CF_YESNO, NULL, 0, &ConfigFileEntry.disable_fake_channels },
+	{ "unicode_nicks",		 CF_YESNO, NULL, 0, &ConfigFileEntry.unicode_nicks },
+	{ "unicode_channels",		 CF_YESNO, NULL, 0, &ConfigFileEntry.unicode_channels },
 	{ "min_nonwildcard_simple",	 CF_INT,   NULL, 0, &ConfigFileEntry.min_nonwildcard_simple },
 	{ "non_redundant_klines",	 CF_YESNO, NULL, 0, &ConfigFileEntry.non_redundant_klines },
 	{ "tkline_expire_notices",	 CF_YESNO, NULL, 0, &ConfigFileEntry.tkline_expire_notices },

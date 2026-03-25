@@ -22,10 +22,15 @@
  */
 
 #include "stdinc.h"
+#include "ratbox_lib.h"
+#include "struct.h"
 #include "charset.h"
 #include "match.h"
 #include "utf8.h"
 #include "unicode_data.h"
+#include "s_conf.h"
+#include "s_log.h"
+#include "hash.h"
 
 /*
  * Strict (ASCII/RFC1459) implementations.
@@ -459,7 +464,44 @@ charset_init(void)
 void
 charset_apply_config(void)
 {
-	/* Phase 4 will add unicode_nicks / unicode_channels config checks here.
-	 * For now, always use strict mode. */
-	active_charset = &charset_strict_ops;
+	int want_nicks = ConfigFileEntry.unicode_nicks;
+	int want_chans = ConfigFileEntry.unicode_channels;
+	int was_unicode = (active_charset->irc_cmp != strict_irc_cmp);
+	int want_unicode = (want_nicks || want_chans);
+
+	if(!want_nicks && !want_chans)
+	{
+		/* Strict mode for everything */
+		if(was_unicode)
+		{
+			ilog(L_MAIN, "Charset: switching to strict (ASCII/RFC1459) mode");
+			active_charset = &charset_strict_ops;
+			hash_rebuild_all_irccmp();
+		}
+		return;
+	}
+
+	/*
+	 * Build a composite: pick nick/chan validators independently,
+	 * but case comparison and hashing must be consistent (UTF-8
+	 * if either unicode option is on).
+	 */
+	charset_composite_ops.is_valid_nick_char = want_nicks
+		? utf8_is_valid_nick_char : strict_is_valid_nick_char;
+	charset_composite_ops.is_valid_chan_char = want_chans
+		? utf8_is_valid_chan_char : strict_is_valid_chan_char;
+	charset_composite_ops.irc_cmp = utf8_irc_cmp;
+	charset_composite_ops.hash_fold = utf8_hash_fold;
+	charset_composite_ops.wild_match = match_utf8;
+	charset_composite_ops.wild_match_esc = match_esc_utf8;
+	charset_composite_ops.casemapping_name = "utf-8";
+	charset_composite_ops.charset_name = "utf-8";
+
+	if(!was_unicode)
+		ilog(L_MAIN, "Charset: switching to permissive (UTF-8) mode");
+
+	active_charset = &charset_composite_ops;
+
+	if(!was_unicode)
+		hash_rebuild_all_irccmp();
 }

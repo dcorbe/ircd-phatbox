@@ -139,6 +139,8 @@ struct config_file_entry
 	int disable_fake_channels;
 	int dot_in_ip6_addr;
 	int dots_in_ident;
+	int unicode_nicks;
+	int unicode_channels;
 	int failed_oper_notice;
 	int anti_nick_flood;
 	int anti_spam_exit_message_time;
