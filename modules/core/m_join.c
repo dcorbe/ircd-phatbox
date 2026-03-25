@@ -25,6 +25,7 @@
 #include "stdinc.h"
 #include "struct.h"
 #include "channel.h"
+#include "charset.h"
 #include "client.h"
 #include "hash.h"
 #include "match.h"
@@ -912,9 +913,9 @@ check_channel_name_loc(struct Client *source_p, const char *name)
 	}
 	else
 	{
-		for(; *name; ++name)
+		while(*name)
 		{
-			if(!IsChanChar(*name))
+			if(!active_charset->is_valid_chan_char(&name))
 				return 0;
 		}
 	}

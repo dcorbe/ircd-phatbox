@@ -28,6 +28,7 @@
 #include "channel.h"
 #include "hash.h"
 #include "match.h"
+#include "charset.h"
 #include "ircd.h"
 #include "numeric.h"
 #include "s_conf.h"
@@ -506,27 +507,27 @@ ms_save(struct Client *client_p, struct Client *source_p, int parc, const char *
 static int
 clean_nick(const char *nick, bool loc_client)
 {
-	int len = 0;
+	const char *p = nick;
 
 	/* nicks cant start with a digit or -, and must have a length */
-	if(*nick == '-' || *nick == '\0')
+	if(*p == '-' || *p == '\0')
 		return 0;
 
-	if(loc_client == true && IsDigit(*nick))
+	if(loc_client == true && IsDigit(*p))
 		return 0;
 
-	for(; *nick; nick++)
+	while(*p)
 	{
-		len++;
-		if(!IsNickChar(*nick))
+		if(!active_charset->is_valid_nick_char(&p))
 			return 0;
 	}
 
-	if(loc_client == true && len < ServerInfo.nicklen_min)
-		return 0;         
+	/* length is measured in bytes (p - nick) */
+	if(loc_client == true && (p - nick) < ServerInfo.nicklen_min)
+		return 0;
 
 	/* nicklen is +1 */
-	if(len >= ServerInfo.nicklen)
+	if((p - nick) >= ServerInfo.nicklen)
 		return 0;
 
 	return 1;
