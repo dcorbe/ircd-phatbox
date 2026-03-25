@@ -61,3 +61,4 @@ libratbox/include/libratbox_config.h
 *~
 
 tools/ucd/
+tests/test_charset

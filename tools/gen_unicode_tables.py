@@ -48,8 +48,13 @@ def download_file(url, path):
 
 
 def parse_unicode_data(path):
-    """Parse UnicodeData.txt, return dict of cp -> fields."""
+    """Parse UnicodeData.txt, return dict of cp -> fields.
+
+    Handles range markers like '<CJK Ideograph, First>' / '<..., Last>'
+    by expanding the range and assigning the same category to all codepoints.
+    """
     data = {}
+    range_start = None
     with open(path) as f:
         for line in f:
             line = line.strip()
@@ -57,8 +62,27 @@ def parse_unicode_data(path):
                 continue
             fields = line.split(";")
             cp = int(fields[0], 16)
+            name = fields[1]
+
+            if name.endswith(", First>"):
+                range_start = cp
+                range_fields = fields
+                continue
+
+            if name.endswith(", Last>") and range_start is not None:
+                # Expand the range
+                for rcp in range(range_start, cp + 1):
+                    data[rcp] = {
+                        "name": range_fields[1],
+                        "category": range_fields[2],
+                        "ccc": int(range_fields[3]),
+                        "decomp": range_fields[5],
+                    }
+                range_start = None
+                continue
+
             data[cp] = {
-                "name": fields[1],
+                "name": name,
                 "category": fields[2],
                 "ccc": int(fields[3]),
                 "decomp": fields[5],
