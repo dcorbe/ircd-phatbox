@@ -56,8 +56,10 @@ libcore_la_SOURCES =			\
         substitution.c                  \
         supported.c                     \
         s_user.c                        \
+        unicode_data.c                  \
+        utf8.c                          \
         version.c                       \
-        whowas.c                        
+        whowas.c
                         
 libcore_LTLIBRARIES = libcore.la
 libcore_la_LDFLAGS = $(EXTRA_FLAGS) -avoid-version

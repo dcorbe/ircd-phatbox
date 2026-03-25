@@ -60,3 +60,4 @@ libratbox/include/libratbox_config.h
 *.swp
 *~
 
+tools/ucd/
