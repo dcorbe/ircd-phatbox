@@ -37,6 +37,8 @@
 #include "parse.h"
 #include "modules.h"
 #include "s_log.h"
+#include "unicode_data.h"
+#include "utf8.h"
 
 static int m_join(struct Client *, struct Client *, int, const char **);
 static int ms_join(struct Client *, struct Client *, int, const char **);
@@ -903,6 +905,8 @@ check_channel_name_loc(struct Client *source_p, const char *name)
 	if(EmptyString(name))
 		return 0;
 
+	const char *start = name;
+
 	if(ConfigFileEntry.disable_fake_channels && !IsOper(source_p))
 	{
 		for(; *name; ++name)
@@ -918,6 +922,23 @@ check_channel_name_loc(struct Client *source_p, const char *name)
 			if(!active_charset->is_valid_chan_char(&name))
 				return 0;
 		}
+	}
+
+	/* Whole-name bidi check in UTF-8 mode */
+	if(active_charset->normalize_nick != NULL)
+	{
+		const unsigned char *p = (const unsigned char *)start;
+		uint32_t cps[CHANNELLEN];
+		int cplen = 0;
+		while(*p && cplen < CHANNELLEN)
+		{
+			uint32_t cp;
+			if(utf8_decode(&p, &cp) < 0)
+				return 0;
+			cps[cplen++] = cp;
+		}
+		if(!unicode_check_bidi(cps, cplen))
+			return 0;
 	}
 
 	return 1;

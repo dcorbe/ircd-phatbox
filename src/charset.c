@@ -171,10 +171,18 @@ utf8_is_valid_chan_char(const char **p)
 		return true;
 	}
 
-	/* Multi-byte UTF-8 — accept any valid sequence */
+	/* Multi-byte UTF-8 — restricted to Letters, Marks, Digits */
 	const unsigned char *s = (const unsigned char *)*p;
 	uint32_t cp;
 	if(utf8_decode(&s, &cp) < 0)
+		return false;
+
+	/* Reject default-ignorable codepoints (defense-in-depth) */
+	if(unicode_is_default_ignorable(cp))
+		return false;
+
+	/* Allow Letters, Marks, Digits only */
+	if(!unicode_is_letter(cp) && !unicode_is_mark(cp) && !unicode_is_digit(cp))
 		return false;
 
 	*p = (const char *)s;
