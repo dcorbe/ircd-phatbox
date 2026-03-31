@@ -444,3 +444,27 @@ precis_prepare_nick(const char *input, uint32_t *output, int outmax)
 		output[i] = fold_buf[i];
 	return fold_len;
 }
+
+int
+precis_prepare_nick_utf8(const char *input, char *out, size_t outlen)
+{
+	uint32_t cps[128];
+	int cplen = precis_prepare_nick(input, cps, 128);
+	if(cplen < 0)
+		return -1;
+
+	/* Re-encode codepoints to UTF-8 */
+	unsigned char *dst = (unsigned char *)out;
+	unsigned char *end = dst + outlen - 1; /* reserve NUL */
+	for(int i = 0; i < cplen; i++)
+	{
+		if(end - dst < 4)
+			return -1; /* not enough room for worst case */
+		int n = utf8_encode(cps[i], dst);
+		if(n < 0)
+			return -1;
+		dst += n;
+	}
+	*dst = '\0';
+	return 0;
+}

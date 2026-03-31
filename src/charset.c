@@ -85,6 +85,7 @@ static struct charset_ops charset_strict_ops = {
 	.hash_fold = strict_hash_fold,
 	.wild_match = match_rfc1459,
 	.wild_match_esc = match_esc_rfc1459,
+	.normalize_nick = NULL,
 	.casemapping_name = "rfc1459",
 	.charset_name = "ascii",
 };
@@ -494,6 +495,12 @@ match_esc_utf8(const char *mask, const char *name)
 	return 0;
 }
 
+static int
+utf8_normalize_nick(char *nick_buf, size_t buflen)
+{
+	return precis_prepare_nick_utf8(nick_buf, nick_buf, buflen);
+}
+
 /*
  * Permissive charset operations — activated by unicode_nicks / unicode_channels config.
  */
@@ -504,6 +511,7 @@ static struct charset_ops charset_permissive_ops = {
 	.hash_fold = utf8_hash_fold,
 	.wild_match = match_utf8,
 	.wild_match_esc = match_esc_utf8,
+	.normalize_nick = utf8_normalize_nick,
 	.casemapping_name = "utf-8",
 	.charset_name = "utf-8",
 };
@@ -556,6 +564,8 @@ charset_apply_config(void)
 	charset_composite_ops.hash_fold = utf8_hash_fold;
 	charset_composite_ops.wild_match = match_utf8;
 	charset_composite_ops.wild_match_esc = match_esc_utf8;
+	charset_composite_ops.normalize_nick = want_nicks
+		? utf8_normalize_nick : NULL;
 	charset_composite_ops.casemapping_name = "utf-8";
 	charset_composite_ops.charset_name = "utf-8";
 

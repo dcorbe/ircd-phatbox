@@ -138,6 +138,27 @@ static void test_precis(void)
 	TEST("PRECIS rejects invalid UTF-8", len == -1);
 }
 
+static void test_precis_utf8(void)
+{
+	char out[64];
+
+	/* ASCII passthrough — case-folded */
+	TEST("PRECIS UTF-8 ASCII", precis_prepare_nick_utf8("Hello", out, 64) == 0);
+	TEST("PRECIS UTF-8 ASCII folded", strcmp(out, "hello") == 0);
+
+	/* NFC normalization: e + combining acute (NFD) → é (NFC), then case-folded */
+	TEST("PRECIS UTF-8 NFD", precis_prepare_nick_utf8("Caf\x65\xCC\x81", out, 64) == 0);
+	/* Should produce "café" (case-folded c + NFC é) */
+	TEST("PRECIS UTF-8 NFD result", strcmp(out, "caf\xC3\xA9") == 0);
+
+	/* Width mapping: fullwidth A (U+FF21) → a (case-folded) */
+	TEST("PRECIS UTF-8 width", precis_prepare_nick_utf8("\xEF\xBC\xA1", out, 64) == 0);
+	TEST("PRECIS UTF-8 width result", strcmp(out, "a") == 0);
+
+	/* Invalid UTF-8 rejected */
+	TEST("PRECIS UTF-8 reject bad", precis_prepare_nick_utf8("bad\xFF", out, 64) == -1);
+}
+
 static void test_bidi_class(void)
 {
 	/* ASCII: Latin → BIDI_L */
@@ -241,6 +262,7 @@ int main(void)
 	test_nfc();
 	test_script();
 	test_precis();
+	test_precis_utf8();
 	test_bidi_class();
 	test_full_case_folding();
 	test_skeleton();
