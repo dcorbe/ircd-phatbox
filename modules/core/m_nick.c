@@ -99,7 +99,7 @@ DECLARE_MODULE_AV1(nick, NULL, NULL, nick_clist, NULL, NULL, "$Revision$");
 
 static int change_remote_nick(struct Client *, struct Client *, time_t, const char *, int);
 
-static int clean_nick(const char *, bool loc_client);
+static int clean_nick(char *, size_t, bool loc_client);
 static int clean_username(const char *);
 static int clean_host(const char *);
 static int clean_uid(const char *uid);
@@ -135,7 +135,7 @@ mr_nick(struct Client *client_p, struct Client *source_p, int parc, const char *
 	rb_strlcpy(nick, parv[1], ServerInfo.nicklen);
 
 	/* check the nickname is ok */
-	if(!clean_nick(nick, true))
+	if(!clean_nick(nick, sizeof(nick), true))
 	{
 		sendto_one_numeric(source_p, s_RPL(ERR_ERRONEUSNICKNAME), parv[1]);
 		return 0;
@@ -188,7 +188,7 @@ m_nick(struct Client *client_p, struct Client *source_p, int parc, const char *p
 	rb_strlcpy(nick, parv[1], ServerInfo.nicklen);
 
 	/* check the nickname is ok */
-	if(!clean_nick(nick, true))
+	if(!clean_nick(nick, sizeof(nick), true))
 	{
 		sendto_one_numeric(source_p, s_RPL(ERR_ERRONEUSNICKNAME), nick);
 		return 0;
@@ -261,7 +261,7 @@ mc_nick(struct Client *client_p, struct Client *source_p, int parc, const char *
 	time_t newts = 0;
 
 	/* if nicks erroneous, or too long, kill */
-	if(!clean_nick(parv[1], false))
+	if(!clean_nick((char *)parv[1], 0, false))
 	{
 		ServerStats.is_kill++;
 		sendto_realops_flags(UMODE_DEBUG, L_ALL,
@@ -322,7 +322,7 @@ ms_nick(struct Client *client_p, struct Client *source_p, int parc, const char *
 	}
 
 	/* if nicks empty, erroneous, or too long, kill */
-	if(!clean_nick(parv[1], false))
+	if(!clean_nick((char *)parv[1], 0, false))
 	{
 		ServerStats.is_kill++;
 		sendto_realops_flags(UMODE_DEBUG, L_ALL,
@@ -414,7 +414,7 @@ ms_uid(struct Client *client_p, struct Client *source_p, int parc, const char *p
 	}
 
 	/* if nicks erroneous, or too long, kill */
-	if(!clean_nick(parv[1], false))
+	if(!clean_nick((char *)parv[1], 0, false))
 	{
 		ServerStats.is_kill++;
 		sendto_realops_flags(UMODE_DEBUG, L_ALL,
@@ -500,12 +500,15 @@ ms_save(struct Client *client_p, struct Client *source_p, int parc, const char *
 
 /* clean_nick()
  *
- * input	- nickname to check
+ * input	- nickname buffer (mutable for local clients)
+ *		- buflen of nick buffer (used for PRECIS normalization)
+ *		- loc_client: true for local clients, false for remote
  * output	- 0 if erroneous, else 1
- * side effects - 
+ * side effects	- for local clients in UTF-8 mode, the nick buffer is
+ *		  overwritten with the PRECIS-prepared canonical form
  */
 static int
-clean_nick(const char *nick, bool loc_client)
+clean_nick(char *nick, size_t buflen, bool loc_client)
 {
 	const char *p = nick;
 
@@ -529,6 +532,13 @@ clean_nick(const char *nick, bool loc_client)
 	/* nicklen is +1 */
 	if((p - nick) >= ServerInfo.nicklen)
 		return 0;
+
+	/* PRECIS normalization for local clients in UTF-8 mode */
+	if(loc_client == true && active_charset->normalize_nick != NULL)
+	{
+		if(active_charset->normalize_nick(nick, buflen) < 0)
+			return 0;
+	}
 
 	return 1;
 }

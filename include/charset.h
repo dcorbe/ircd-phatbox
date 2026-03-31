@@ -25,6 +25,7 @@
 #define INCLUDED_charset_h
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 /*
@@ -57,6 +58,11 @@ struct charset_ops {
 
 	/* Wildcard match with escape sequences. Returns 1 on match, 0 otherwise. */
 	int (*wild_match_esc)(const char *mask, const char *name);
+
+	/* Whole-nick PRECIS normalization. NULL in strict mode.
+	 * On success, writes canonical form to nick_buf and returns 0.
+	 * On failure returns -1. */
+	int (*normalize_nick)(char *nick_buf, size_t buflen);
 
 	/* ISUPPORT token values */
 	const char *casemapping_name;	/* "rfc1459" or "utf-8" */

@@ -30,6 +30,7 @@
 #define INCLUDED_unicode_data_h
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 /* --- General Category checks --- */
@@ -161,5 +162,15 @@ int unicode_skeleton(const uint32_t *input, int inlen,
  * prohibited characters, bidi violation), returns -1.
  */
 int precis_prepare_nick(const char *input, uint32_t *output, int outmax);
+
+/*
+ * Apply the PRECIS UsernameCaseMapped profile to a UTF-8 nick string
+ * and write the result back as UTF-8.
+ *
+ * On success, writes the prepared UTF-8 string to out (NUL-terminated)
+ * and returns 0.  On failure (invalid input, prohibited characters,
+ * bidi violation, overflow), returns -1.
+ */
+int precis_prepare_nick_utf8(const char *input, char *out, size_t outlen);
 
 #endif /* INCLUDED_unicode_data_h */
