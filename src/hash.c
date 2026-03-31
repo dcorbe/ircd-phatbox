@@ -26,6 +26,7 @@
 #include "struct.h"
 #include "hash.h"
 #include "charset.h"
+#include "unicode_data.h"
 #include "s_conf.h"
 #include "channel.h"
 #include "client.h"
@@ -134,8 +135,13 @@ fnv_hash_upper(const unsigned char *s, unsigned int bits, size_t unused)
 	uint32_t h = FNV1_32_INIT;
 	while(*s)
 	{
-		h ^= active_charset->hash_fold(&s);
-		h += (h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24);
+		uint32_t folded[CASEFOLD_MAX_EXPANSION];
+		int n = active_charset->hash_fold(&s, folded, CASEFOLD_MAX_EXPANSION);
+		for(int i = 0; i < n; i++)
+		{
+			h ^= folded[i];
+			h += (h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24);
+		}
 	}
 	h = (h >> (32 - bits)) ^ (h & ((1U << bits) - 1));
 	return h;
@@ -175,8 +181,13 @@ fnv_hash_upper_len(const unsigned char *s, unsigned int bits, size_t len)
 	const unsigned char *x = s + len;
 	while(s < x && *s)
 	{
-		h ^= active_charset->hash_fold(&s);
-		h += (h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24);
+		uint32_t folded[CASEFOLD_MAX_EXPANSION];
+		int n = active_charset->hash_fold(&s, folded, CASEFOLD_MAX_EXPANSION);
+		for(int i = 0; i < n; i++)
+		{
+			h ^= folded[i];
+			h += (h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24);
+		}
 	}
 	h = (h >> (32 - bits)) ^ (h & ((1U << bits) - 1));
 	return h;

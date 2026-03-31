@@ -127,6 +127,23 @@ def parse_case_folding(path):
     return sorted(folds)
 
 
+def parse_full_case_folding(path):
+    """Parse CaseFolding.txt, return list of (from, [to_cps]) for status F."""
+    folds = []
+    with open(path) as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            parts = line.split(";")
+            status = parts[1].strip()
+            if status == "F":
+                cp_from = int(parts[0].strip(), 16)
+                cp_to = [int(x, 16) for x in parts[2].strip().split()]
+                folds.append((cp_from, cp_to))
+    return sorted(folds)
+
+
 def build_canonical_decomp(udata):
     """Extract canonical decompositions (not compatibility) from UnicodeData."""
     decomps = {}
@@ -326,8 +343,8 @@ def write_pair_table(f, name, pairs, doc=""):
     f.write("};\n\n")
 
 
-def generate_c(udata, case_folds, decomps, ccc_table, compositions,
-               script_ids, script_flat, ignorable_ranges,
+def generate_c(udata, case_folds, full_case_folds, decomps, ccc_table,
+               compositions, script_ids, script_flat, ignorable_ranges,
                confusable_mappings, fullwidth_map, output_path):
     """Generate unicode_tables.c — data tables and thin lookup functions.
 
@@ -401,6 +418,12 @@ struct unicode_comp_entry {
 \tuint32_t composed;
 };
 
+struct unicode_full_casefold_entry {
+\tuint32_t from;
+\tuint32_t to[3]; /* max full fold is 3 codepoints */
+\tint len;
+};
+
 struct unicode_confusable_entry {
 \tuint32_t from;
 \tuint32_t to[4]; /* most confusable mappings are 1-3 codepoints */
@@ -468,6 +491,38 @@ lookup_pair(uint32_t cp, const struct unicode_pair *table, int count)
                          f"Simple Case Folding — {len(case_folds)} entries")
         f.write("uint32_t\nunicode_casefold(uint32_t cp)\n{\n")
         f.write(f"\treturn lookup_pair(cp, casefold_table, {len(case_folds)});\n}}\n\n")
+
+        # --- Full Case Folding (status F entries: one-to-many) ---
+        f.write(f"/* Full Case Folding (status F) — {len(full_case_folds)} entries */\n")
+        f.write("static const struct unicode_full_casefold_entry full_casefold_table[] = {\n")
+        for cp_from, cp_to_list in full_case_folds:
+            padded = cp_to_list[:3] + [0] * (3 - len(cp_to_list[:3]))
+            hexparts = ", ".join(f"0x{p:04X}" for p in padded)
+            f.write(f"\t{{0x{cp_from:04X}, {{{hexparts}}}, {len(cp_to_list)}}},\n")
+        f.write("};\n\n")
+
+        f.write(f"#define FULL_CASEFOLD_TABLE_SIZE {len(full_case_folds)}\n\n")
+
+        f.write("int\nunicode_casefold_full(uint32_t cp, uint32_t *out, int outmax)\n{\n")
+        f.write("\t/* Check full folding table first (status F: one-to-many) */\n")
+        f.write("\tint lo = 0, hi = FULL_CASEFOLD_TABLE_SIZE - 1;\n")
+        f.write("\twhile(lo <= hi)\n\t{\n")
+        f.write("\t\tint mid = (lo + hi) / 2;\n")
+        f.write("\t\tif(cp < full_casefold_table[mid].from)\n\t\t\thi = mid - 1;\n")
+        f.write("\t\telse if(cp > full_casefold_table[mid].from)\n\t\t\tlo = mid + 1;\n")
+        f.write("\t\telse\n\t\t{\n")
+        f.write("\t\t\tint len = full_casefold_table[mid].len;\n")
+        f.write("\t\t\tif(len > outmax)\n\t\t\t\treturn -1;\n")
+        f.write("\t\t\tfor(int i = 0; i < len; i++)\n")
+        f.write("\t\t\t\tout[i] = full_casefold_table[mid].to[i];\n")
+        f.write("\t\t\treturn len;\n")
+        f.write("\t\t}\n")
+        f.write("\t}\n")
+        f.write("\t/* Fall back to simple case fold */\n")
+        f.write("\tif(outmax < 1)\n\t\treturn -1;\n")
+        f.write("\tout[0] = unicode_casefold(cp);\n")
+        f.write("\treturn 1;\n")
+        f.write("}\n\n")
 
         # --- CCC ---
         f.write(f"/* Canonical Combining Class — {len(ccc_table)} non-zero entries */\n")
@@ -638,6 +693,7 @@ def main():
     # Parse input files
     udata = parse_unicode_data(os.path.join(args.ucd_dir, "UnicodeData.txt"))
     case_folds = parse_case_folding(os.path.join(args.ucd_dir, "CaseFolding.txt"))
+    full_case_folds = parse_full_case_folding(os.path.join(args.ucd_dir, "CaseFolding.txt"))
     decomps = build_canonical_decomp(udata)
     ccc_table = build_ccc_table(udata)
     exclusions = parse_composition_exclusions(os.path.join(args.ucd_dir, "CompositionExclusions.txt"))
@@ -650,8 +706,8 @@ def main():
     fullwidth_map = build_fullwidth_map()
 
     # Generate output
-    generate_c(udata, case_folds, decomps, ccc_table, compositions,
-               script_ids, script_flat, ignorable_ranges,
+    generate_c(udata, case_folds, full_case_folds, decomps, ccc_table,
+               compositions, script_ids, script_flat, ignorable_ranges,
                confusable_mappings, fullwidth_map, args.output)
 
     # Print stats
@@ -660,6 +716,7 @@ def main():
     print(f"  Mark ranges:       {len(build_category_ranges(udata, ['M']))}", file=sys.stderr)
     print(f"  Digit ranges:      {len(build_category_ranges(udata, ['Nd']))}", file=sys.stderr)
     print(f"  Case fold entries: {len(case_folds)}", file=sys.stderr)
+    print(f"  Full fold entries: {len(full_case_folds)}", file=sys.stderr)
     print(f"  Decomp entries:    {len(decomps)}", file=sys.stderr)
     print(f"  CCC entries:       {len(ccc_table)}", file=sys.stderr)
     print(f"  Composition pairs: {len(compositions)}", file=sys.stderr)

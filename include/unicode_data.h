@@ -54,6 +54,21 @@ bool unicode_is_default_ignorable(uint32_t cp);
  */
 uint32_t unicode_casefold(uint32_t cp);
 
+/*
+ * Maximum number of codepoints a single codepoint can expand to
+ * under full case folding (status F maps 1 -> up to 3).
+ */
+#define CASEFOLD_MAX_EXPANSION 3
+
+/*
+ * Full Case Folding from CaseFolding.txt (status C, S, and F entries).
+ * Writes folded codepoint(s) to out (up to outmax).
+ * Returns the number of codepoints written (1 for simple, 1-3 for full).
+ * Returns -1 if out buffer is too small.
+ * If cp has no folding, writes cp to out[0] and returns 1.
+ */
+int unicode_casefold_full(uint32_t cp, uint32_t *out, int outmax);
+
 /* --- NFC normalization --- */
 
 /*

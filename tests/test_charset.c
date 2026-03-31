@@ -138,6 +138,48 @@ static void test_precis(void)
 	TEST("PRECIS rejects invalid UTF-8", len == -1);
 }
 
+static void test_full_case_folding(void)
+{
+	uint32_t out[CASEFOLD_MAX_EXPANSION];
+	int n;
+
+	/* Simple fold: 'A' -> 'a' (1 codepoint) */
+	n = unicode_casefold_full(0x41, out, CASEFOLD_MAX_EXPANSION);
+	TEST("full fold 'A' -> 'a' count", n == 1);
+	TEST("full fold 'A' -> 'a' value", out[0] == 0x61);
+
+	/* Already lowercase: 'a' unchanged */
+	n = unicode_casefold_full(0x61, out, CASEFOLD_MAX_EXPANSION);
+	TEST("full fold 'a' unchanged count", n == 1);
+	TEST("full fold 'a' unchanged value", out[0] == 0x61);
+
+	/* Full fold: ß (U+00DF) -> ss (2 codepoints) */
+	n = unicode_casefold_full(0x00DF, out, CASEFOLD_MAX_EXPANSION);
+	TEST("full fold ß count", n == 2);
+	TEST("full fold ß [0]=s", out[0] == 0x73);
+	TEST("full fold ß [1]=s", out[1] == 0x73);
+
+	/* Full fold: fi ligature (U+FB01) -> fi (2 codepoints) */
+	n = unicode_casefold_full(0xFB01, out, CASEFOLD_MAX_EXPANSION);
+	TEST("full fold fi ligature count", n == 2);
+	TEST("full fold fi ligature [0]=f", out[0] == 0x66);
+	TEST("full fold fi ligature [1]=i", out[1] == 0x69);
+
+	/* Cyrillic А (U+0410) -> а (U+0430), simple fold path */
+	n = unicode_casefold_full(0x0410, out, CASEFOLD_MAX_EXPANSION);
+	TEST("full fold Cyrillic А count", n == 1);
+	TEST("full fold Cyrillic А value", out[0] == 0x0430);
+
+	/* CJK unchanged */
+	n = unicode_casefold_full(0x592A, out, CASEFOLD_MAX_EXPANSION);
+	TEST("full fold CJK unchanged count", n == 1);
+	TEST("full fold CJK unchanged value", out[0] == 0x592A);
+
+	/* Buffer too small for ß */
+	n = unicode_casefold_full(0x00DF, out, 1);
+	TEST("full fold ß buffer too small", n == -1);
+}
+
 static void test_skeleton(void)
 {
 	uint32_t in1[] = {0x48, 0x65, 0x6C, 0x6C, 0x6F}; /* Hello */
@@ -166,6 +208,7 @@ int main(void)
 	test_nfc();
 	test_script();
 	test_precis();
+	test_full_case_folding();
 	test_skeleton();
 
 	printf("\n%d/%d tests passed\n", tests_passed, tests_run);
