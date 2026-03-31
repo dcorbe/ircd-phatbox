@@ -63,10 +63,12 @@ strict_irc_cmp(const char *s1, const char *s2)
 	return irccmp_rfc1459(s1, s2);
 }
 
-static uint32_t
-strict_hash_fold(const unsigned char **s)
+static int
+strict_hash_fold(const unsigned char **s, uint32_t *out, int outmax)
 {
-	return ToUpper(*(*s)++);
+	(void)outmax;
+	out[0] = ToUpper(*(*s)++);
+	return 1;
 }
 
 /* Forward declarations — the actual implementations live in match.c */
@@ -97,25 +99,34 @@ static struct charset_ops charset_strict_ops = {
 
 /*
  * Helper: case-fold one logical character and advance the pointer.
- * For ASCII, uses ToUpper (RFC1459 rules).  For multi-byte UTF-8,
- * decodes and applies Unicode Simple Case Folding.
+ * Writes folded codepoint(s) to out (up to outmax).
+ * Returns count of codepoints written.
+ *
+ * For ASCII, uses ToUpper (RFC1459 rules) — always 1 codepoint.
+ * For multi-byte UTF-8, decodes and applies full Unicode Case Folding
+ * (which may expand one codepoint to up to CASEFOLD_MAX_EXPANSION).
  *
  * On invalid UTF-8, returns the raw byte and advances by 1.
  */
-static uint32_t
-utf8_fold_advance(const unsigned char **s)
+static int
+utf8_fold_advance(const unsigned char **s, uint32_t *out, int outmax)
 {
 	if(**s < 0x80)
-		return ToUpper(*(*s)++);
+	{
+		out[0] = ToUpper(*(*s)++);
+		return 1;
+	}
 
 	uint32_t cp;
 	const unsigned char *saved = *s;
 	if(utf8_decode(s, &cp) < 0)
 	{
 		/* Invalid UTF-8 — treat as raw byte */
-		return *saved;
+		out[0] = *saved;
+		*s = saved + 1;
+		return 1;
 	}
-	return unicode_casefold(cp);
+	return unicode_casefold_full(cp, out, outmax);
 }
 
 static bool
@@ -174,27 +185,51 @@ utf8_irc_cmp(const char *s1, const char *s2)
 {
 	const unsigned char *p1 = (const unsigned char *)s1;
 	const unsigned char *p2 = (const unsigned char *)s2;
+	uint32_t buf1[CASEFOLD_MAX_EXPANSION], buf2[CASEFOLD_MAX_EXPANSION];
+	int len1 = 0, pos1 = 0;
+	int len2 = 0, pos2 = 0;
 
 	for(;;)
 	{
-		if(*p1 == '\0' && *p2 == '\0')
+		if(pos1 >= len1)
+		{
+			if(*p1 == '\0')
+				len1 = pos1 = 0;
+			else
+			{
+				len1 = utf8_fold_advance(&p1, buf1, CASEFOLD_MAX_EXPANSION);
+				pos1 = 0;
+			}
+		}
+		if(pos2 >= len2)
+		{
+			if(*p2 == '\0')
+				len2 = pos2 = 0;
+			else
+			{
+				len2 = utf8_fold_advance(&p2, buf2, CASEFOLD_MAX_EXPANSION);
+				pos2 = 0;
+			}
+		}
+
+		if(pos1 >= len1 && pos2 >= len2)
 			return 0;
-		if(*p1 == '\0')
+		if(pos1 >= len1)
 			return -1;
-		if(*p2 == '\0')
+		if(pos2 >= len2)
 			return 1;
 
-		uint32_t c1 = utf8_fold_advance(&p1);
-		uint32_t c2 = utf8_fold_advance(&p2);
+		uint32_t c1 = buf1[pos1++];
+		uint32_t c2 = buf2[pos2++];
 		if(c1 != c2)
 			return (c1 < c2) ? -1 : 1;
 	}
 }
 
-static uint32_t
-utf8_hash_fold(const unsigned char **s)
+static int
+utf8_hash_fold(const unsigned char **s, uint32_t *out, int outmax)
 {
-	return utf8_fold_advance(s);
+	return utf8_fold_advance(s, out, outmax);
 }
 
 /*
@@ -206,15 +241,44 @@ utf8_hash_fold(const unsigned char **s)
  */
 #define MATCH_MAX_CALLS 512
 
-static uint32_t
-peek_fold(const unsigned char *s)
+/*
+ * Fold one logical character at s without advancing.
+ * Writes folded codepoint(s) to out. Returns count written.
+ */
+static int
+peek_fold(const unsigned char *s, uint32_t *out, int outmax)
 {
 	if(*s < 0x80)
-		return ToUpper(*s);
+	{
+		out[0] = ToUpper(*s);
+		return 1;
+	}
 	uint32_t cp;
 	if(utf8_decode(&s, &cp) < 0)
-		return *s;
-	return unicode_casefold(cp);
+	{
+		out[0] = *s;
+		return 1;
+	}
+	return unicode_casefold_full(cp, out, outmax);
+}
+
+/*
+ * Compare folded sequences from mask and name at current positions.
+ */
+static bool
+fold_cmp_equal(const unsigned char *m, const unsigned char *n)
+{
+	uint32_t fm[CASEFOLD_MAX_EXPANSION], fn[CASEFOLD_MAX_EXPANSION];
+	int nm = peek_fold(m, fm, CASEFOLD_MAX_EXPANSION);
+	int nn = peek_fold(n, fn, CASEFOLD_MAX_EXPANSION);
+	if(nm != nn)
+		return false;
+	for(int i = 0; i < nm; i++)
+	{
+		if(fm[i] != fn[i])
+			return false;
+	}
+	return true;
 }
 
 /* Advance past one codepoint. Returns new pointer. */
@@ -285,9 +349,7 @@ match_utf8(const char *mask, const char *name)
 		}
 		else
 		{
-			uint32_t cm = peek_fold(m);
-			uint32_t cn = peek_fold(n);
-			if(cm == cn)
+			if(fold_cmp_equal(m, n))
 			{
 				m = advance_cp(m);
 				n = advance_cp(n);
@@ -383,7 +445,7 @@ match_esc_utf8(const char *mask, const char *name)
 				if(*m == 's')
 					match1 = (*n == ' ');
 				else
-					match1 = (peek_fold(m) == peek_fold(n));
+					match1 = fold_cmp_equal(m, n);
 			}
 			else if(*m == '?')
 				match1 = 1;
@@ -412,7 +474,7 @@ match_esc_utf8(const char *mask, const char *name)
 					match1 = 0;
 			}
 			else
-				match1 = (peek_fold(m) == peek_fold(n));
+				match1 = fold_cmp_equal(m, n);
 
 			if(match1)
 			{

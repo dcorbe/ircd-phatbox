@@ -47,8 +47,10 @@ struct charset_ops {
 	/* Case-insensitive string comparison. Returns 0 if equal. */
 	int (*irc_cmp)(const char *s1, const char *s2);
 
-	/* Case-fold and advance one character for hashing. Returns folded value. */
-	uint32_t (*hash_fold)(const unsigned char **s);
+	/* Case-fold and advance one character for hashing.
+	 * Writes folded codepoint(s) to out (up to outmax).
+	 * Returns count of codepoints written. */
+	int (*hash_fold)(const unsigned char **s, uint32_t *out, int outmax);
 
 	/* Case-insensitive wildcard match. Returns 1 on match, 0 otherwise. */
 	int (*wild_match)(const char *mask, const char *name);

@@ -436,17 +436,26 @@ precis_prepare_nick(const char *input, uint32_t *output, int outmax)
 			return -1;
 	}
 
-	/* Case fold */
+	/* Case fold (full: one codepoint may expand to up to 3) */
+	uint32_t fold_buf[384]; /* 128 * CASEFOLD_MAX_EXPANSION */
+	int fold_len = 0;
 	for(int i = 0; i < nfc_len; i++)
-		nfc_buf[i] = unicode_casefold(nfc_buf[i]);
+	{
+		int n = unicode_casefold_full(nfc_buf[i],
+					      fold_buf + fold_len,
+					      384 - fold_len);
+		if(n < 0)
+			return -1;
+		fold_len += n;
+	}
 
 	/* Bidi check */
-	if(!unicode_check_bidi(nfc_buf, nfc_len))
+	if(!unicode_check_bidi(fold_buf, fold_len))
 		return -1;
 
-	if(nfc_len > outmax)
+	if(fold_len > outmax)
 		return -1;
-	for(int i = 0; i < nfc_len; i++)
-		output[i] = nfc_buf[i];
-	return nfc_len;
+	for(int i = 0; i < fold_len; i++)
+		output[i] = fold_buf[i];
+	return fold_len;
 }
