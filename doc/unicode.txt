@@ -1,0 +1,124 @@
+Unicode Support in ircd-phatbox
+================================
+
+Overview
+--------
+
+ircd-phatbox supports UTF-8 Unicode characters in nicknames and channel
+names.  This is controlled by two independent configuration options:
+
+    unicode_nicks = yes;      /* in the general {} block */
+    unicode_channels = yes;
+
+When either option is enabled, ISUPPORT advertises CASEMAPPING=utf-8
+and CHARSET=utf-8.  All servers on a network MUST use the same setting.
+A strict server will kill Unicode nicks received from a permissive peer.
+
+
+Nick Protections
+----------------
+
+When unicode_nicks is enabled, every local NICK command goes through
+the full PRECIS UsernameCaseMapped profile (RFC 8265) before the nick
+is accepted.  The following protections are applied:
+
+NFC Normalization
+    Unicode has multiple ways to represent the same character.  For
+    example, "cafe\u0301" (e + combining acute) and "caf\u00e9"
+    (precomposed e-acute) look identical but are different byte
+    sequences.  NFC normalization ensures they are treated as one nick.
+
+Full Case Folding
+    Nicks are case-folded using Unicode Full Case Folding, which
+    includes one-to-many mappings.  The German sharp-s (\u00df) folds
+    to "ss", so "stra\u00dfe" and "strasse" are the same nick.  ASCII
+    characters use RFC1459 case rules (brackets map to braces).
+
+Width Mapping
+    Fullwidth ASCII variants (U+FF01..U+FF5E) are mapped to their
+    standard ASCII equivalents.  Fullwidth "A" and regular "A" are
+    the same nick.
+
+Confusable Detection (UTS #39)
+    After PRECIS normalization, a "skeleton" is computed for each nick
+    using the Unicode Consortium's confusable mapping tables.  If a new
+    nick's skeleton matches an existing nick's skeleton, the NICK
+    command is rejected.
+
+    Example: Cyrillic "a" (U+0430) looks identical to Latin "a"
+    (U+0061).  If "daniel" is registered, an attacker cannot register
+    "d\u0430niel" (with Cyrillic a) because both produce the same
+    skeleton.
+
+Bidi Enforcement (RFC 5893)
+    Nicks mixing left-to-right and right-to-left scripts must follow
+    strict ordering rules to prevent display confusion.  A nick that
+    starts with an RTL character must end with an RTL character.
+
+
+Channel Protections
+-------------------
+
+When unicode_channels is enabled, non-ASCII characters in channel
+names are restricted to Unicode Letters, Marks, and Digits.  The
+following characters are blocked:
+
+    - Zero-width joiners and non-joiners (U+200C, U+200D)
+    - Bidirectional overrides (U+202A-U+202E, U+2066-U+2069)
+    - Zero-width space (U+200B), soft hyphen (U+00AD)
+    - Byte order mark / zero-width no-break space (U+FEFF)
+    - Variation selectors, tag characters, format characters
+    - All other default-ignorable codepoints
+
+ASCII punctuation (hyphen, underscore, dot, etc.) is still allowed
+through the standard IsChanChar rules.
+
+RFC 5893 bidi rule checking is applied to the full channel name.
+
+
+Migration Notes
+---------------
+
+When enabling Unicode on a running network:
+
+    1. Hash tables are rebuilt automatically on rehash.
+
+    2. Existing nicks and channels are NOT forcibly removed.
+
+    3. Non-conforming nicks will be rejected on the next NICK change.
+       Users with nicks that fail PRECIS validation will need to choose
+       a new nick.
+
+    4. Channels containing blocked characters (symbols, format chars)
+       will become unreachable.  New joins to non-conforming names will
+       fail, but the channel object persists until empty.
+
+    5. All servers on the network should enable the setting at the same
+       time to avoid nick kills from strict/permissive disagreement.
+
+
+Known Limitations
+-----------------
+
+Turkish I
+    IRC has no concept of per-user locale.  The Turkish dotless-i
+    (U+0131) and dotted-I (U+0130) follow standard Unicode case
+    folding rules, not Turkish-specific rules.
+
+ISUPPORT CASEMAPPING=utf-8
+    This value is not defined in any IRC specification.  Clients that
+    validate against known values (rfc1459, ascii, rfc1459-strict) may
+    fall back to incorrect folding rules.
+
+Nick Length in Bytes
+    The nicklen limit is measured in bytes, not codepoints.  A nick
+    composed of 4-byte CJK characters uses its byte budget 4x faster
+    than ASCII.  This is intentional — it bounds the memory and wire
+    cost of a nick regardless of encoding.
+
+Remote Nicks
+    Confusable detection only applies to local NICK commands.  Remote
+    nicks from other servers are inserted into the skeleton table but
+    never rejected, to avoid network desynchronization.  If two servers
+    independently accept confusable nicks, both will exist on the
+    network.
