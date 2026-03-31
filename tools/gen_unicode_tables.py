@@ -78,6 +78,7 @@ def parse_unicode_data(path):
                         "name": range_fields[1],
                         "category": range_fields[2],
                         "ccc": int(range_fields[3]),
+                        "bidi": range_fields[4],
                         "decomp": range_fields[5],
                     }
                 range_start = None
@@ -87,6 +88,7 @@ def parse_unicode_data(path):
                 "name": name,
                 "category": fields[2],
                 "ccc": int(fields[3]),
+                "bidi": fields[4],
                 "decomp": fields[5],
             }
     return data
@@ -306,13 +308,41 @@ def parse_confusables(path):
 
 
 def build_bidi_ranges(udata):
-    """Build bidi class ranges from UnicodeData.txt Bidi_Category field."""
-    # UnicodeData field index 4 is Bidi_Category
-    # But we already parsed only a subset of fields. Let's re-read.
-    # Actually, we need to add bidi to our parser. For now, use the
-    # DerivedBidiClass.txt approach or re-parse UnicodeData.
-    # UnicodeData.txt field[4] = Bidi_Category
-    pass
+    """Build bidi class ranges from UnicodeData.txt Bidi_Category field.
+
+    Returns a flat sorted list of (start, end, bidi_class_id) tuples.
+    Only includes the 11 classes needed for RFC 5893.
+    """
+    bidi_class_ids = {
+        "L": 0, "R": 1, "AL": 2, "AN": 3, "EN": 4,
+        "ES": 5, "CS": 6, "ET": 7, "ON": 8, "BN": 9, "NSM": 10,
+    }
+
+    # Collect codepoints per bidi class
+    by_class = defaultdict(list)
+    for cp, d in udata.items():
+        bidi = d.get("bidi")
+        if bidi in bidi_class_ids:
+            by_class[bidi].append(cp)
+
+    # Compress into ranges and build flat table
+    flat = []
+    for bidi_name, cps in by_class.items():
+        class_id = bidi_class_ids[bidi_name]
+        cps = sorted(cps)
+        if not cps:
+            continue
+        start = end = cps[0]
+        for cp in cps[1:]:
+            if cp == end + 1:
+                end = cp
+            else:
+                flat.append((start, end, class_id))
+                start = end = cp
+        flat.append((start, end, class_id))
+
+    flat.sort()
+    return flat
 
 
 def build_fullwidth_map():
@@ -344,8 +374,9 @@ def write_pair_table(f, name, pairs, doc=""):
 
 
 def generate_c(udata, case_folds, full_case_folds, decomps, ccc_table,
-               compositions, script_ids, script_flat, ignorable_ranges,
-               confusable_mappings, fullwidth_map, output_path):
+               compositions, script_ids, script_flat, bidi_flat,
+               ignorable_ranges, confusable_mappings, fullwidth_map,
+               output_path):
     """Generate unicode_tables.c — data tables and thin lookup functions.
 
     Algorithm functions (NFC, NFD, skeleton, bidi, PRECIS) live in the
@@ -422,6 +453,12 @@ struct unicode_full_casefold_entry {
 \tuint32_t from;
 \tuint32_t to[3]; /* max full fold is 3 codepoints */
 \tint len;
+};
+
+struct unicode_bidi_range {
+\tuint32_t start;
+\tuint32_t end;
+\tint bidi_class;
 };
 
 struct unicode_confusable_entry {
@@ -638,6 +675,22 @@ unicode_lookup_comp(uint32_t cp1, uint32_t cp2)
         f.write("\t\telse\n\t\t\treturn script_table[mid].script_id;\n")
         f.write("\t}\n\treturn SCRIPT_COMMON;\n}\n\n")
 
+        # --- Bidi class ---
+        f.write(f"/* Bidi_Class — {len(bidi_flat)} ranges */\n")
+        f.write("static const struct unicode_bidi_range bidi_table[] = {\n")
+        for start, end, class_id in bidi_flat:
+            f.write(f"\t{{0x{start:04X}, 0x{end:04X}, {class_id}}},\n")
+        f.write("};\n\n")
+
+        f.write("int\nunicode_bidi_class(uint32_t cp)\n{\n")
+        f.write(f"\tint lo = 0, hi = {len(bidi_flat) - 1};\n")
+        f.write("\twhile(lo <= hi)\n\t{\n")
+        f.write("\t\tint mid = (lo + hi) / 2;\n")
+        f.write("\t\tif(cp < bidi_table[mid].start)\n\t\t\thi = mid - 1;\n")
+        f.write("\t\telse if(cp > bidi_table[mid].end)\n\t\t\tlo = mid + 1;\n")
+        f.write("\t\telse\n\t\t\treturn bidi_table[mid].bidi_class;\n")
+        f.write("\t}\n\treturn BIDI_L; /* default for unassigned */\n}\n\n")
+
         # --- Width mapping ---
         write_pair_table(f, "fullwidth_table", fullwidth_map,
                          f"Fullwidth → ASCII — {len(fullwidth_map)} entries")
@@ -704,11 +757,13 @@ def main():
         os.path.join(args.ucd_dir, "DerivedCoreProperties.txt"))
     confusable_mappings = parse_confusables(os.path.join(args.ucd_dir, "confusables.txt"))
     fullwidth_map = build_fullwidth_map()
+    bidi_flat = build_bidi_ranges(udata)
 
     # Generate output
     generate_c(udata, case_folds, full_case_folds, decomps, ccc_table,
-               compositions, script_ids, script_flat, ignorable_ranges,
-               confusable_mappings, fullwidth_map, args.output)
+               compositions, script_ids, script_flat, bidi_flat,
+               ignorable_ranges, confusable_mappings, fullwidth_map,
+               args.output)
 
     # Print stats
     print(f"\nTable statistics:", file=sys.stderr)
@@ -723,6 +778,7 @@ def main():
     print(f"  Script ranges:     {len(script_flat)}", file=sys.stderr)
     print(f"  Ignorable ranges:  {len(ignorable_ranges)}", file=sys.stderr)
     print(f"  Confusable entries:{len(confusable_mappings)}", file=sys.stderr)
+    print(f"  Bidi ranges:       {len(bidi_flat)}", file=sys.stderr)
     print(f"  Fullwidth entries: {len(fullwidth_map)}", file=sys.stderr)
 
 

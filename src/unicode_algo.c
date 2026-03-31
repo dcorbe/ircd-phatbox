@@ -272,22 +272,7 @@ unicode_nfd(const uint32_t *input, int inlen, uint32_t *output, int outmax)
 
 /* --- Bidi --- */
 
-int
-unicode_bidi_class(uint32_t cp)
-{
-	/*
-	 * Simplified bidi class lookup.
-	 * TODO: replace with generated table from UnicodeData.txt field[4]
-	 * (Phase 2 of the unicode security hardening plan).
-	 */
-	if(cp < 0x0080)
-		return BIDI_L;
-	if(cp >= 0x0590 && cp <= 0x05FF)
-		return BIDI_R;
-	if(cp >= 0x0600 && cp <= 0x06FF)
-		return BIDI_AL;
-	return BIDI_L;
-}
+/* unicode_bidi_class() is generated in unicode_tables.c */
 
 bool
 unicode_check_bidi(const uint32_t *cps, int len)
