@@ -56,7 +56,8 @@ libcore_la_SOURCES =			\
         substitution.c                  \
         supported.c                     \
         s_user.c                        \
-        unicode_data.c                  \
+        unicode_algo.c                  \
+        unicode_tables.c                \
         utf8.c                          \
         version.c                       \
         whowas.c
