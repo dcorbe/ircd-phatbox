@@ -495,6 +495,73 @@ match_esc_utf8(const char *mask, const char *name)
 	return 0;
 }
 
+/*
+ * Skeleton hash table helpers for confusable detection.
+ * These are called from m_nick.c alongside HASH_CLIENT operations.
+ */
+#include "client.h"
+
+void
+nick_skeleton_add(struct Client *client_p, const char *nick)
+{
+	char skel[NICKLEN * CASEFOLD_MAX_EXPANSION * 4];
+
+	if(active_charset->normalize_nick == NULL)
+		return;
+
+	if(nick_compute_skeleton_utf8(nick, skel, sizeof(skel)) < 0)
+		return;
+
+	if(client_p->user->skeleton != NULL)
+	{
+		hash_del(HASH_SKELETON, client_p->user->skeleton, client_p);
+		rb_free(client_p->user->skeleton);
+	}
+
+	client_p->user->skeleton = rb_strdup(skel);
+	hash_add(HASH_SKELETON, client_p->user->skeleton, client_p);
+}
+
+void
+nick_skeleton_del(struct Client *client_p)
+{
+	if(client_p->user == NULL || client_p->user->skeleton == NULL)
+		return;
+
+	hash_del(HASH_SKELETON, client_p->user->skeleton, client_p);
+	rb_free(client_p->user->skeleton);
+	client_p->user->skeleton = NULL;
+}
+
+struct Client *
+nick_skeleton_find(const char *nick, struct Client *exclude)
+{
+	char skel[NICKLEN * CASEFOLD_MAX_EXPANSION * 4];
+
+	if(active_charset->normalize_nick == NULL)
+		return NULL;
+
+	if(nick_compute_skeleton_utf8(nick, skel, sizeof(skel)) < 0)
+		return NULL;
+
+	rb_dlink_list *list = hash_find_list(HASH_SKELETON, skel);
+	if(list == NULL)
+		return NULL;
+
+	rb_dlink_node *ptr;
+	RB_DLINK_FOREACH(ptr, list->head)
+	{
+		struct Client *target = ptr->data;
+		if(target != exclude)
+		{
+			hash_free_list(list);
+			return target;
+		}
+	}
+	hash_free_list(list);
+	return NULL;
+}
+
 static int
 utf8_normalize_nick(char *nick_buf, size_t buflen)
 {

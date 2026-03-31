@@ -109,6 +109,7 @@ extern hash_f *hash_connid;
 extern hash_f *hash_zconnid;
 extern hash_f *hash_monitor;
 extern hash_f *hash_command;
+extern hash_f *hash_skeleton;
 
 #define	HASH_CLIENT hash_client
 #define	HASH_ID hash_id
@@ -124,6 +125,7 @@ extern hash_f *hash_command;
 #define	HASH_ZCONNID hash_zconnid
 #define	HASH_MONITOR hash_monitor
 #define	HASH_COMMAND hash_command
+#define	HASH_SKELETON hash_skeleton
 
 
 struct _hash_node

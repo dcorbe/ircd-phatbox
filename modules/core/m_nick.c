@@ -154,6 +154,13 @@ mr_nick(struct Client *client_p, struct Client *source_p, int parc, const char *
 		return 0;
 	}
 
+	/* confusable nick detection */
+	if(nick_skeleton_find(nick, source_p) != NULL)
+	{
+		sendto_one_numeric(source_p, s_RPL(ERR_ERRONEUSNICKNAME), nick);
+		return 0;
+	}
+
 	if((target_p = find_client(nick)) == NULL)
 		set_initial_nick(client_p, source_p, nick);
 	else if(source_p == target_p)
@@ -203,6 +210,13 @@ m_nick(struct Client *client_p, struct Client *source_p, int parc, const char *p
 	if(hash_find(HASH_CLIENT, nick) != NULL)
 	{
 		sendto_one_numeric(source_p, s_RPL(ERR_UNAVAILRESOURCE), nick);
+		return 0;
+	}
+
+	/* confusable nick detection */
+	if(nick_skeleton_find(nick, source_p) != NULL)
+	{
+		sendto_one_numeric(source_p, s_RPL(ERR_ERRONEUSNICKNAME), nick);
 		return 0;
 	}
 
@@ -625,10 +639,12 @@ set_initial_nick(struct Client *client_p, struct Client *source_p, char *nick)
 	if(!EmptyString(source_p->name))
 		hash_del(HASH_CLIENT, source_p->name, source_p);
 
+	nick_skeleton_del(source_p);
 	make_user(source_p);
 	strcpy(source_p->user->name, nick);
 	source_p->name = source_p->user->name;
 	hash_add(HASH_CLIENT, nick, source_p);
+	nick_skeleton_add(source_p, nick);
 
 	snprintf(note, sizeof(note), "Nick: %s", nick);
 	rb_note(client_p->localClient->F, note);
@@ -708,9 +724,11 @@ change_local_nick(struct Client *client_p, struct Client *source_p, char *nick, 
 	}
 
 	/* Finally, add to hash */
+	nick_skeleton_del(source_p);
 	hash_del(HASH_CLIENT, source_p->name, source_p);
 	strcpy(source_p->user->name, nick);
 	hash_add(HASH_CLIENT, nick, source_p);
+	nick_skeleton_add(source_p, nick);
 
 	if(!samenick)
 		monitor_signon(source_p);
@@ -765,14 +783,16 @@ change_remote_nick(struct Client *client_p, struct Client *source_p,
 		}
 	}
 
+	nick_skeleton_del(source_p);
 	hash_del(HASH_CLIENT, source_p->name, source_p);
 
 	/* invalidate nick delay when a remote client uses the nick.. */
 	if((nd = hash_find_data(HASH_ND, nick)) != NULL)
 		free_nd_entry(nd);
-	                        
+
 	strcpy(source_p->user->name, nick);
 	hash_add(HASH_CLIENT, nick, source_p);
+	nick_skeleton_add(source_p, nick);
 
 	if(!samenick)
 		monitor_signon(source_p);
@@ -1135,6 +1155,7 @@ register_client(struct Client *client_p, struct Client *server,
 		free_nd_entry(nd);
 
 	hash_add(HASH_CLIENT, nick, source_p);
+	nick_skeleton_add(source_p, nick);
 	hash_add(HASH_HOSTNAME, source_p->host, source_p);
 	inc_global_cidr_count(source_p);
 	monitor_signon(source_p);

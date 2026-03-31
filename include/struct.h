@@ -33,6 +33,7 @@ struct User
 	rb_dlink_list channel;	/* chain of channel pointer blocks */
 	char *away;		/* pointer to away message */
 	char name[NICKLEN];
+	char *skeleton;		/* UTF-8 skeleton key for confusable detection, or NULL */
 #ifdef ENABLE_SERVICES
 	char suser[NICKLEN + 1];
 #endif

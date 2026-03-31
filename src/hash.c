@@ -90,6 +90,7 @@ hash_f *hash_connid;
 hash_f *hash_zconnid;
 hash_f *hash_monitor;
 hash_f *hash_command;
+hash_f *hash_skeleton;
 
 /* init_hash()
  *
@@ -112,6 +113,7 @@ init_hash(void)
 	hash_zconnid = hash_create("Ziplinks ID", CMP_MEMCMP, CLI_ZCONNID_MAX_BITS, sizeof(uint32_t));
 	hash_monitor = hash_create("MONITOR", CMP_IRCCMP, MONITOR_MAX_BITS, 0);
 	hash_command = hash_create("Command", CMP_IRCCMP, COMMAND_MAX_BITS, 10);
+	hash_skeleton = hash_create("Skeleton", CMP_STRCMP, U_MAX_BITS, 0);
 }
 
 /* fnv_hash_len_data hashses any data */

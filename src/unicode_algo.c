@@ -380,6 +380,74 @@ unicode_skeleton(const uint32_t *input, int inlen, uint32_t *output, int outmax)
 	return unicode_nfd(buf1, mapped, output, outmax);
 }
 
+/* --- Skeleton UTF-8 wrapper --- */
+
+int
+nick_compute_skeleton_utf8(const char *input, char *out, size_t outlen)
+{
+	/* Decode input to codepoints */
+	const unsigned char *p = (const unsigned char *)input;
+	uint32_t cps[128];
+	int cplen = 0;
+	while(*p && cplen < 128)
+	{
+		uint32_t cp;
+		if(utf8_decode(&p, &cp) < 0)
+			return -1;
+		cps[cplen++] = cp;
+	}
+	if(*p)
+		return -1;
+
+	/* Case-fold before skeleton (so 'H' and 'h' produce same result) */
+	uint32_t folded[384]; /* 128 * CASEFOLD_MAX_EXPANSION */
+	int fold_len = 0;
+	for(int i = 0; i < cplen; i++)
+	{
+		int n = unicode_casefold_full(cps[i],
+					      folded + fold_len,
+					      384 - fold_len);
+		if(n < 0)
+			return -1;
+		fold_len += n;
+	}
+
+	/* Compute skeleton on case-folded form */
+	uint32_t skel[512];
+	int skel_len = unicode_skeleton(folded, fold_len, skel, 512);
+	if(skel_len < 0)
+		return -1;
+
+	/* Case-fold the skeleton output (confusable mappings may
+	 * produce uppercase, e.g. ℌ → H via confusable table) */
+	uint32_t skel_folded[512];
+	int sf_len = 0;
+	for(int i = 0; i < skel_len; i++)
+	{
+		int n = unicode_casefold_full(skel[i],
+					      skel_folded + sf_len,
+					      512 - sf_len);
+		if(n < 0)
+			return -1;
+		sf_len += n;
+	}
+
+	/* Re-encode to UTF-8 */
+	unsigned char *dst = (unsigned char *)out;
+	unsigned char *end = dst + outlen - 1;
+	for(int i = 0; i < sf_len; i++)
+	{
+		if(end - dst < 4)
+			return -1;
+		int n = utf8_encode(skel_folded[i], dst);
+		if(n < 0)
+			return -1;
+		dst += n;
+	}
+	*dst = '\0';
+	return 0;
+}
+
 /* --- PRECIS (RFC 8265 UsernameCaseMapped) --- */
 
 int

@@ -78,4 +78,10 @@ void charset_init(void);
 /* Re-read configuration and switch charset mode if needed. Called from rehash path. */
 void charset_apply_config(void);
 
+/* Skeleton hash table helpers for confusable nick detection. */
+struct Client;
+void nick_skeleton_add(struct Client *client_p, const char *nick);
+void nick_skeleton_del(struct Client *client_p);
+struct Client *nick_skeleton_find(const char *nick, struct Client *exclude);
+
 #endif /* INCLUDED_charset_h */
