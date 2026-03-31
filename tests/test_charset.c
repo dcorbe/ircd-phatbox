@@ -138,6 +138,39 @@ static void test_precis(void)
 	TEST("PRECIS rejects invalid UTF-8", len == -1);
 }
 
+static void test_bidi_class(void)
+{
+	/* ASCII: Latin → BIDI_L */
+	TEST("bidi 'A' is L", unicode_bidi_class(0x41) == BIDI_L);
+
+	/* Hebrew Alef (U+05D0) → BIDI_R */
+	TEST("bidi Hebrew Alef is R", unicode_bidi_class(0x05D0) == BIDI_R);
+
+	/* Arabic Alif (U+0627) → BIDI_AL */
+	TEST("bidi Arabic Alif is AL", unicode_bidi_class(0x0627) == BIDI_AL);
+
+	/* Syriac Alaph (U+0710) → BIDI_AL — broken with old hardcoded stub */
+	TEST("bidi Syriac Alaph is AL", unicode_bidi_class(0x0710) == BIDI_AL);
+
+	/* Thaana (U+0780) → BIDI_AL */
+	TEST("bidi Thaana is AL", unicode_bidi_class(0x0780) == BIDI_AL);
+
+	/* N'Ko (U+07C0) → BIDI_R */
+	TEST("bidi N'Ko is R", unicode_bidi_class(0x07C0) == BIDI_R);
+
+	/* European digit (U+0030 '0') → BIDI_EN */
+	TEST("bidi digit '0' is EN", unicode_bidi_class(0x30) == BIDI_EN);
+
+	/* Arabic-Indic digit (U+0660) → BIDI_AN */
+	TEST("bidi Arabic-Indic 0 is AN", unicode_bidi_class(0x0660) == BIDI_AN);
+
+	/* Combining acute (U+0301) → BIDI_NSM */
+	TEST("bidi combining acute is NSM", unicode_bidi_class(0x0301) == BIDI_NSM);
+
+	/* CJK ideograph (U+4E00) → BIDI_L */
+	TEST("bidi CJK is L", unicode_bidi_class(0x4E00) == BIDI_L);
+}
+
 static void test_full_case_folding(void)
 {
 	uint32_t out[CASEFOLD_MAX_EXPANSION];
@@ -208,6 +241,7 @@ int main(void)
 	test_nfc();
 	test_script();
 	test_precis();
+	test_bidi_class();
 	test_full_case_folding();
 	test_skeleton();
 
