@@ -138,6 +138,27 @@ static void test_precis(void)
 	TEST("PRECIS rejects invalid UTF-8", len == -1);
 }
 
+static void test_skeleton_utf8(void)
+{
+	char skel1[64], skel2[64];
+
+	/* "hello" and "ℌello" (U+210C script H) should have the same skeleton
+	 * (skeleton case-folds then applies confusable mapping) */
+	TEST("skel utf8 hello", nick_compute_skeleton_utf8("hello", skel1, 64) == 0);
+	TEST("skel utf8 ℌello", nick_compute_skeleton_utf8("\xE2\x84\x8C" "ello", skel2, 64) == 0);
+	TEST("hello == ℌello skeleton", strcmp(skel1, skel2) == 0);
+
+	/* Cyrillic а (U+0430) and Latin a have the same skeleton */
+	TEST("skel utf8 Latin a", nick_compute_skeleton_utf8("a", skel1, 64) == 0);
+	TEST("skel utf8 Cyrillic а", nick_compute_skeleton_utf8("\xD0\xB0", skel2, 64) == 0);
+	TEST("Latin a == Cyrillic а skeleton", strcmp(skel1, skel2) == 0);
+
+	/* Different nicks have different skeletons */
+	TEST("skel utf8 foo", nick_compute_skeleton_utf8("foo", skel1, 64) == 0);
+	TEST("skel utf8 bar", nick_compute_skeleton_utf8("bar", skel2, 64) == 0);
+	TEST("foo != bar skeleton", strcmp(skel1, skel2) != 0);
+}
+
 static void test_precis_utf8(void)
 {
 	char out[64];
@@ -263,6 +284,7 @@ int main(void)
 	test_script();
 	test_precis();
 	test_precis_utf8();
+	test_skeleton_utf8();
 	test_bidi_class();
 	test_full_case_folding();
 	test_skeleton();

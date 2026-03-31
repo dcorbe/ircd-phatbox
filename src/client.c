@@ -41,6 +41,7 @@
 #include "s_stats.h"
 #include "send.h"
 #include "whowas.h"
+#include "charset.h"
 #include "s_user.h"
 #include "hash.h"
 #include "hostmask.h"
@@ -1095,6 +1096,7 @@ exit_generic_client(struct Client *source_p, const char *comment)
 		hash_del(HASH_ID, source_p->id, source_p);
 
 	hash_del(HASH_HOSTNAME, source_p->host, source_p);
+	nick_skeleton_del(source_p);
 	hash_del(HASH_CLIENT, source_p->name, source_p);
 	remove_client_from_list(source_p);
 }
@@ -1157,6 +1159,7 @@ exit_unknown_client(struct Client *client_p, struct Client *source_p, const char
 	}
 
 	hash_del(HASH_HOSTNAME, source_p->host, source_p);
+	nick_skeleton_del(source_p);
 	hash_del(HASH_CLIENT, source_p->name, source_p);
 	remove_client_from_list(source_p);
 	SetDead(source_p);
@@ -1203,6 +1206,7 @@ exit_remote_server(struct Client *client_p, struct Client *source_p, struct Clie
 	if(has_id(source_p))
 		hash_del(HASH_ID, source_p->id, source_p);
 
+	nick_skeleton_del(source_p);
 	hash_del(HASH_CLIENT, source_p->name, source_p);
 	remove_client_from_list(source_p);
 
@@ -1228,6 +1232,7 @@ qs_server(struct Client *source_p)
 	if(has_id(source_p))
 		hash_del(HASH_ID, source_p->id, source_p);
 
+	nick_skeleton_del(source_p);
 	hash_del(HASH_CLIENT, source_p->name, source_p);
 	remove_client_from_list(source_p);
 
@@ -1294,6 +1299,7 @@ exit_local_server(struct Client *client_p, struct Client *source_p, struct Clien
 	if(has_id(source_p))
 		hash_del(HASH_ID, source_p->id, source_p);
 
+	nick_skeleton_del(source_p);
 	hash_del(HASH_CLIENT, source_p->name, source_p);
 	remove_client_from_list(source_p);
 
@@ -1634,6 +1640,8 @@ free_user(struct User *user, struct Client *client_p)
 	}
 	if(user->away != NULL)
 		rb_free(user->away);
+	if(user->skeleton != NULL)
+		rb_free(user->skeleton);
 	rb_free(user);
 }
 

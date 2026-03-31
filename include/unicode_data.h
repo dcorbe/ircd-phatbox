@@ -164,6 +164,14 @@ int unicode_skeleton(const uint32_t *input, int inlen,
 int precis_prepare_nick(const char *input, uint32_t *output, int outmax);
 
 /*
+ * Compute the UTS #39 skeleton of a UTF-8 string.
+ *
+ * On success, writes the skeleton as a UTF-8 string to out
+ * (NUL-terminated) and returns 0.  On failure returns -1.
+ */
+int nick_compute_skeleton_utf8(const char *input, char *out, size_t outlen);
+
+/*
  * Apply the PRECIS UsernameCaseMapped profile to a UTF-8 nick string
  * and write the result back as UTF-8.
  *
