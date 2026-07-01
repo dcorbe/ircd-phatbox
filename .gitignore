@@ -58,6 +58,7 @@ libratbox/src/version.c
 libratbox/src/version.c.last
 include/setup.h
 include/librb-config.h
+libratbox/include/librb-config.h
 libratbox/include/libratbox_config.h
 
 # IDE / OS
