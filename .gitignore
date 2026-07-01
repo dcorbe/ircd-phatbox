@@ -19,6 +19,11 @@ Makefile.in
 include/setup.h.in
 install-mod.sh.in
 libratbox/include/libratbox_config.h.in
+
+# Hand-written templates that match the patterns above but are NOT
+# generated (no matching .am / driven by AC_CONFIG_FILES). Keep tracked.
+!doc/Makefile.in
+!install-mod.sh.in
 autoconf/
 m4/
 compile

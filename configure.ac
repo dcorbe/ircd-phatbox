@@ -130,7 +130,8 @@ WARNLIST="
 	no-unused
 	unused-function
 	unused-variable
-	no-incompatible-function-pointer-types" 
+	no-incompatible-function-pointer-types
+	no-error=incompatible-pointer-types"
 
 for x in $WARNLIST; do 
 	if cc_accepts_flag -W$x; then
