@@ -14,6 +14,27 @@ Known Bugs
 
 --------------------------------------------------------------------------------
 
+2. Latent buffer overflow in substitution_parse() (deferred):
+
+   In src/substitution.c, after copying a substitution value:
+
+       rb_strlcpy(bptr, val->value, IRCD_BUFSIZE - (bptr - buf));
+       bptr += strlen(val->value);
+
+   rb_strlcpy() correctly truncates to the space remaining in buf, but
+   bptr is then advanced by the full, untruncated strlen(val->value). If
+   a value is longer than the space left in buf, bptr moves past
+   buf + IRCD_BUFSIZE; the loop exits on its bound check and the trailing
+   "*bptr = '\0'" writes out of bounds.
+
+   This is pre-existing (inherited from ratbox/charybdis), not a
+   regression. Fix: advance bptr only by the number of bytes actually
+   written, e.g. bptr += strlen(bptr) after the copy, or clamp to the
+   remaining space. Reachability depends on how long a val->value a
+   caller can supply.
+
+--------------------------------------------------------------------------------
+
 Report bugs at: https://github.com/dcorbe/ircd-phatbox/issues
 
 Include a gdb backtrace and keep your binaries, modules, and core file
