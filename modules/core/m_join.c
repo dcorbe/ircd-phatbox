@@ -924,10 +924,14 @@ check_channel_name_loc(struct Client *source_p, const char *name)
 		}
 	}
 
-	/* Whole-name bidi check in UTF-8 mode */
+	/* Whole-name bidi check in UTF-8 mode.  The '#'/'&' sigil is not
+	 * part of the label — RFC 5893 Rule 1 rejects leading neutrals —
+	 * so skip it. */
 	if(active_charset->normalize_nick != NULL)
 	{
 		const unsigned char *p = (const unsigned char *)start;
+		while(IsChanPrefix(*p))
+			p++;
 		uint32_t cps[CHANNELLEN];
 		int cplen = 0;
 		while(*p && cplen < CHANNELLEN)
