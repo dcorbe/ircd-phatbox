@@ -274,6 +274,41 @@ static void test_skeleton(void)
 	}
 }
 
+static void test_bidi_rule(void)
+{
+	/* Strings with no RTL characters are exempt from the RFC 5893
+	 * Bidi Rule (PRECIS, RFC 8264 section 4.2.3): neutrals and
+	 * digits in leading position must not cause rejection. */
+	uint32_t chan[] = {'#', 't', 'e', 's', 't'};
+	TEST("bidi rule: #test valid", unicode_check_bidi(chan, 5));
+
+	uint32_t brack[] = {'[', 'd', 'a', 'n', ']'};
+	TEST("bidi rule: [dan] valid", unicode_check_bidi(brack, 5));
+
+	uint32_t digits[] = {'0', '1', '2'};
+	TEST("bidi rule: leading digit valid", unicode_check_bidi(digits, 3));
+
+	/* Pure RTL satisfies the rule */
+	uint32_t heb[] = {0x05E2, 0x05D1};
+	TEST("bidi rule: Hebrew valid", unicode_check_bidi(heb, 2));
+
+	/* RTL label ending in a European digit — allowed (rules 2+3) */
+	uint32_t hebnum[] = {0x05D0, '1'};
+	TEST("bidi rule: Hebrew+digit valid", unicode_check_bidi(hebnum, 2));
+
+	/* Mixed-direction stays rejected */
+	uint32_t mixed1[] = {'a', 0x05D0};
+	TEST("bidi rule: L then R rejected", !unicode_check_bidi(mixed1, 2));
+
+	uint32_t mixed2[] = {0x05D0, 'a'};
+	TEST("bidi rule: R then L rejected", !unicode_check_bidi(mixed2, 2));
+
+	/* Neutral sigil before RTL is rejected at this layer; channel
+	 * validation must strip the '#'/'&' prefix before checking. */
+	uint32_t sigil_rtl[] = {'#', 0x05D0};
+	TEST("bidi rule: '#'+RTL rejected", !unicode_check_bidi(sigil_rtl, 2));
+}
+
 int main(void)
 {
 	test_utf8_decode();
@@ -286,6 +321,7 @@ int main(void)
 	test_precis_utf8();
 	test_skeleton_utf8();
 	test_bidi_class();
+	test_bidi_rule();
 	test_full_case_folding();
 	test_skeleton();
 

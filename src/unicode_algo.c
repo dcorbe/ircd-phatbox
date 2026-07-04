@@ -280,6 +280,27 @@ unicode_check_bidi(const uint32_t *cps, int len)
 	if(len == 0)
 		return true;
 
+	/*
+	 * The Bidi Rule only constrains strings that actually contain
+	 * RTL characters (RFC 5893 section 1.4; PRECIS directionality
+	 * rule, RFC 8264 section 4.2.3).  Without this exemption every
+	 * string starting with a neutral ('#', '[', '_') or a digit
+	 * would be rejected, since Rule 1 requires the first character
+	 * to be class L, R, or AL.
+	 */
+	bool has_rtl = false;
+	for(int i = 0; i < len; i++)
+	{
+		int bc = unicode_bidi_class(cps[i]);
+		if(bc == BIDI_R || bc == BIDI_AL || bc == BIDI_AN)
+		{
+			has_rtl = true;
+			break;
+		}
+	}
+	if(!has_rtl)
+		return true;
+
 	int first_class = unicode_bidi_class(cps[0]);
 
 	/*
