@@ -138,14 +138,14 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libcoredir)"
 LTLIBRARIES = $(libcore_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-am_libcore_la_OBJECTS = bandbi.lo cache.lo channel.lo class.lo \
-	client.lo dns.lo getopt.lo hash.lo hook.lo hostmask.lo \
+am_libcore_la_OBJECTS = bandbi.lo cache.lo channel.lo charset.lo \
+	class.lo client.lo dns.lo getopt.lo hash.lo hook.lo hostmask.lo \
 	ipv4_from_ipv6.lo ircd.lo ircd_lexer.lo ircd_parser.lo \
 	ircd_signal.lo listener.lo match.lo modules.lo monitor.lo \
 	newconf.lo operhash.lo packet.lo parse.lo reject.lo s_auth.lo \
 	scache.lo s_conf.lo send.lo services.lo s_log.lo s_newconf.lo \
 	s_serv.lo sslproc.lo substitution.lo supported.lo s_user.lo \
-	version.lo whowas.lo
+	unicode_algo.lo unicode_tables.lo utf8.lo version.lo whowas.lo
 libcore_la_OBJECTS = $(am_libcore_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -421,6 +421,7 @@ libcore_la_SOURCES = \
         bandbi.c                        \
         cache.c                         \
         channel.c                       \
+        charset.c                       \
         class.c                         \
         client.c                        \
 	dns.c                           \
@@ -454,8 +455,11 @@ libcore_la_SOURCES = \
         substitution.c                  \
         supported.c                     \
         s_user.c                        \
+        unicode_algo.c                  \
+        unicode_tables.c                \
+        utf8.c                          \
         version.c                       \
-        whowas.c                        
+        whowas.c
 
 libcore_LTLIBRARIES = libcore.la
 libcore_la_LDFLAGS = $(EXTRA_FLAGS) -avoid-version
@@ -546,6 +550,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bandbi.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cache.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/channel.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/charset.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/class.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/client.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns.Plo@am__quote@
@@ -579,6 +584,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sslproc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/substitution.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/supported.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unicode_algo.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unicode_tables.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utf8.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/version.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/whowas.Plo@am__quote@
 
